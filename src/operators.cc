@@ -573,3 +573,24 @@ operator<<(std::ostream &stream, const stochbb::Container &x) {
   }
   return stream;
 }
+
+
+/* ********************************************************************************************* *
+ * Implementation of logLikelihood
+ * ********************************************************************************************* */
+double
+stochbb::logLikelihood(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &values) {
+  double tmin = values.minCoeff(), tmax = values.maxCoeff(), dt=(tmax-tmin)/N;
+  Eigen::VectorXd pdf(N);
+  X.density().eval(tmin, tmax, pdf);
+  double ll = 0;
+  for (int i=0; i<values.size(); i++) {
+    size_t idx = 0;
+    if (tmax == values(i))
+      idx = N-1;
+    else
+      idx = (values(i)-tmin)/dt;
+    ll += std::log(pdf[idx]);
+  }
+  return ll;
+}

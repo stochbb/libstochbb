@@ -293,6 +293,10 @@ Density directConvolve(const Density &a, const Density &b);
  * This function is mainly used for testing the numerical convolution algorithm.
  * @ingroup api */
 Density directConvolve(const Density &a, const Density &b, const Density &c);
+
+/** Evaluates the log likelihood of the given data for the given data using a N-point piece-wise
+ * linear approximation of the density function. */
+double logLikelihood(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &values);
 }
 
 /** Overloads the +-operator to construct a @c Chain.
