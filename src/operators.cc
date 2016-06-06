@@ -581,7 +581,7 @@ operator<<(std::ostream &stream, const stochbb::Container &x) {
 double
 stochbb::logLikelihood(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &values) {
   double tmin = values.minCoeff(), tmax = values.maxCoeff(), dt=(tmax-tmin)/N;
-  tmim -= dt; tmax += dt; dt = (tmax-tmin)/N;
+  tmin -= dt; tmax += dt; dt = (tmax-tmin)/N;
   Eigen::VectorXd pdf(N);
   X.density().eval(tmin, tmax, pdf);
   double ll = 0;
