@@ -1,5 +1,4 @@
 #include "logger.hh"
-#include <QFileInfo>
 #include <locale>
 
 using namespace stochbb;

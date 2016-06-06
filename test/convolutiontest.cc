@@ -1,7 +1,7 @@
 #include "convolutiontest.hh"
-#include "lib/api.hh"
-#include "lib/chain.hh"
-#include "lib/distribution.hh"
+#include "src/api.hh"
+#include "src/chain.hh"
+#include "src/distribution.hh"
 
 
 using namespace stochbb;

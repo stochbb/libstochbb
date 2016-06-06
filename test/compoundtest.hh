@@ -1,7 +1,7 @@
 #ifndef COMPOUNDTEST_HH
 #define COMPOUNDTEST_HH
 
-#include "lib/unittest.hh"
+#include "src/unittest.hh"
 
 namespace stochbb {
 

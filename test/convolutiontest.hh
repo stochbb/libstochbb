@@ -1,7 +1,7 @@
 #ifndef CONVOLUTIONTEST_HH
 #define CONVOLUTIONTEST_HH
 
-#include "lib/unittest.hh"
+#include "src/unittest.hh"
 
 namespace stochbb {
 

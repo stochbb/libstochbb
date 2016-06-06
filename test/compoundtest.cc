@@ -1,6 +1,6 @@
 #include "compoundtest.hh"
-#include "lib/api.hh"
-#include "lib/density.hh"
+#include "src/api.hh"
+#include "src/density.hh"
 #include <iostream>
 
 using namespace stochbb;

@@ -1,7 +1,7 @@
 #ifndef EXACTSAMPLERTEST_HH
 #define EXACTSAMPLERTEST_HH
 
-#include "lib/unittest.hh"
+#include "src/unittest.hh"
 
 
 namespace stochbb {

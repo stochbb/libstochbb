@@ -1,5 +1,5 @@
 #include "exactsamplertest.hh"
-#include "lib/exactsampler.hh"
+#include "src/exactsampler.hh"
 
 using namespace stochbb;
 using namespace stochbb::UnitTest;

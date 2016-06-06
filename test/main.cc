@@ -1,10 +1,10 @@
-#include "lib/unittest.hh"
+#include "src/unittest.hh"
 #include <iostream>
 
 #include "convolutiontest.hh"
 #include "compoundtest.hh"
 #include "exactsamplertest.hh"
-#include "lib/logger.hh"
+#include "src/logger.hh"
 
 using namespace stochbb;
 using namespace stochbb::UnitTest;
