@@ -583,9 +583,10 @@ stochbb::kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &v
   // Copy data
   Eigen::VectorXd ordered_vals(values);
   // sort values
-  std::sort(ordered_vals.data(), ordered_vals.data()+values.size(), std::greater<double>());
+  std::sort(ordered_vals.data(), ordered_vals.data()+ordered_vals.size(), std::greater<double>());
   // get min & max
   double tmin = ordered_vals(0), tmax = ordered_vals(ordered_vals.size()-1);
+  std::cerr << "tmin=" << tmin << ", tmax=" << tmax << "." << std::endl;
   // prepare eval;
   double dt=(tmax-tmin)/N;
   // Extend range by one dt
@@ -600,7 +601,7 @@ stochbb::kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &v
   // However, as the CDF is accessible too, a KS test can be performed.
   double D = 0;
   size_t M = ordered_vals.size();
-  for (int i=0; i<ordered_vals.size(); i++) {
+  for (size_t i=0; i<M; i++) {
     size_t j = (ordered_vals(i)-tmin)/dt;
     D = std::max(D, std::abs(cdf(j)-double(i)/M));
     /// @todo Eval KS-statistic instead of returning D.
