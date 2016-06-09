@@ -22,7 +22,7 @@ stochbb::is_delta(const Density &dens) {
 }
 
 Var
-stochbb::delta(double value, const std::__1::string &name) {
+stochbb::delta(double value, const std::string &name) {
   Eigen::VectorXd param(1); param << value;
   return new AtomicVarObj(new AtomicDensityObj(new DeltaDistributionObj(), param), name);
 }
@@ -576,18 +576,38 @@ operator<<(std::ostream &stream, const stochbb::Container &x) {
 
 
 /* ********************************************************************************************* *
- * Implementation of logLikelihood
+ * Implementation of kolmogorov
  * ********************************************************************************************* */
 double
-stochbb::logLikelihood(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &values) {
-  double tmin = values.minCoeff(), tmax = values.maxCoeff(), dt=(tmax-tmin)/N;
-  tmin -= dt; tmax += dt; dt = (tmax-tmin)/N;
-  Eigen::VectorXd pdf(N);
-  X.density().eval(tmin, tmax, pdf);
-  double ll = 0;
-  for (int i=0; i<values.size(); i++) {
-    size_t idx = (values(i)-tmin)/dt;
-    ll += std::log(pdf[idx]);
+stochbb::kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &values) {
+  // Copy data
+  Eigen::VectorXd ordered_vals(values);
+  // sort values
+  std::sort(ordered_vals.data(), ordered_vals.data()+values.size(), std::greater<double>());
+  // get min & max
+  double tmin = ordered_vals(0), tmax = ordered_vals(ordered_vals.size()-1);
+  // prepare eval;
+  double dt=(tmax-tmin)/N;
+  // Extend range by one dt
+  tmax += dt; dt = (tmax-tmin)/N;
+  // eval CDF
+  Eigen::VectorXd cdf(N+1);
+  X.density().evalCDF(tmin, tmax, cdf);
+  // Eval approx KS statistic
+  // In fact, the log likelihood cannot be evaluated reliably, as we evaluate the
+  // density of X directly instead of evaluating the log density. Hence the evaluation,
+  // is not stable an will result into NaNs for all reasonable sample sizes.
+  // However, as the CDF is accessible too, a KS test can be performed.
+  double D = 0;
+  size_t M = ordered_vals.size();
+  for (int i=0; i<ordered_vals.size(); i++) {
+    size_t j = (ordered_vals(i)-tmin)/dt;
+    D = std::max(D, std::abs(cdf(j)-double(i)/M));
+    /// @todo Eval KS-statistic instead of returning D.
+    /// e.g.  George Marsaglia, Wai Wan Tsang and Jingbo Wang (2003), Evaluating
+    ///       Kolmogorov's distribution.  _Journal of Statistical Software_,
+    ///       *8*/18.  <URL: http://www.jstatsoft.org/v08/i18/>.
   }
-  return ll;
+  // done.
+  return D;
 }
