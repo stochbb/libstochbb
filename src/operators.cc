@@ -583,7 +583,7 @@ stochbb::kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &v
   // Copy data
   Eigen::VectorXd ordered_vals(values);
   // sort values
-  std::sort(ordered_vals.data(), ordered_vals.data()+ordered_vals.size(), std::greater<double>());
+  std::sort(ordered_vals.data(), ordered_vals.data()+ordered_vals.size(), std::less<double>());
   // get min & max
   double tmin = ordered_vals(0), tmax = ordered_vals(ordered_vals.size()-1);
   std::cerr << "tmin=" << tmin << ", tmax=" << tmax << "." << std::endl;
