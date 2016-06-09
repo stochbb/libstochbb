@@ -585,7 +585,8 @@ stochbb::kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &v
   // sort values
   std::sort(ordered_vals.data(), ordered_vals.data()+ordered_vals.size(), std::less<double>());
   // get min & max
-  double tmin = ordered_vals(0), tmax = ordered_vals(ordered_vals.size()-1);
+  double tmin = std::min(0.0, ordered_vals(0));
+  double tmax = ordered_vals(ordered_vals.size()-1);
   std::cerr << "tmin=" << tmin << ", tmax=" << tmax << "." << std::endl;
   // prepare eval;
   double dt=(tmax-tmin)/N;
@@ -603,7 +604,7 @@ stochbb::kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &v
   size_t M = ordered_vals.size();
   for (size_t i=0; i<M; i++) {
     size_t j = (ordered_vals(i)-tmin)/dt;
-    D = std::max(D, std::abs(cdf(j)-double(i)/M));
+    D = std::max(D, std::abs(cdf(j)-double(i+1)/M));
     /// @todo Eval KS-statistic instead of returning D.
     /// e.g.  George Marsaglia, Wai Wan Tsang and Jingbo Wang (2003), Evaluating
     ///       Kolmogorov's distribution.  _Journal of Statistical Software_,
