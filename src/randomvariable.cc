@@ -60,7 +60,8 @@ void
 AtomicVarObj::mark() {
   if (isMarked()) { return; }
   VarObj::mark();
-  _density->mark();
+  if (_density)
+    _density->mark();
 }
 
 Density

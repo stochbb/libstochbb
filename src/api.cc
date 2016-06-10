@@ -33,7 +33,8 @@ Container::Container(Object *obj)
 Container::Container(const Container &other)
   : _object(other._object)
 {
-  other._object->ref();
+  if (_object)
+    _object->ref();
 }
 
 Container::~Container() {

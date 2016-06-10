@@ -239,8 +239,8 @@ ChainObj::ChainObj(const std::vector<Var> &variables, const std::string &name)
   }
 
   // Assemble convolution density
-  _density = *convolve(dens);
-  //_density->unref();
+  Density res = convolve(dens);
+  _density = *res;
 }
 
 ChainObj::~ChainObj() {

@@ -100,6 +100,7 @@ AtomicDensityObj::affine(double scale, double shift) const {
   // copy parameters
   Eigen::VectorXd params = _params;
   _distribution->affine(scale, shift, params);
+  _distribution->ref();
   return new AtomicDensityObj(_distribution, params);
 }
 
