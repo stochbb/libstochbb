@@ -43,6 +43,8 @@ public:
 class TestCase
 {
 public:
+  virtual ~TestCase();
+
   /** Will be called just before each test. */
   virtual void setUp();
 

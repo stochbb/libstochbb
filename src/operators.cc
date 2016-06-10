@@ -587,7 +587,6 @@ stochbb::kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &v
   // get min & max
   double tmin = std::min(0.0, ordered_vals(0));
   double tmax = ordered_vals(ordered_vals.size()-1);
-  std::cerr << "tmin=" << tmin << ", tmax=" << tmax << "." << std::endl;
   // prepare eval;
   double dt=(tmax-tmin)/N;
   // Extend range by one dt
@@ -612,4 +611,29 @@ stochbb::kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &v
   }
   // done.
   return D;
+}
+
+/* ********************************************************************************************* *
+ * Implementation of logLikelihood
+ * ********************************************************************************************* */
+double
+stochbb::logLikelihood(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &values) {
+  // get min & max
+  double tmin = std::min(0.0, values.minCoeff());
+  double tmax = values.maxCoeff();
+  // prepare eval;
+  double dt=(tmax-tmin)/N;
+  // Extend range by one dt
+  tmax += dt; dt = (tmax-tmin)/N;
+  // eval CDF
+  Eigen::VectorXd pdf(N+1);
+  X.density().eval(tmin, tmax, pdf);
+  // Eval approx log Likelihood
+  double ll = 0;
+  for (int i=0; i<values.size(); i++) {
+    size_t j = (values(i)-tmin)/dt;
+    ll += std::log(pdf(j));
+  }
+  // done.
+  return ll;
 }
