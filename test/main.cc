@@ -1,6 +1,7 @@
 #include "src/unittest.hh"
 #include <iostream>
 
+#include "memorytest.hh"
 #include "convolutiontest.hh"
 #include "compoundtest.hh"
 #include "exactsamplertest.hh"
@@ -12,12 +13,13 @@ using namespace stochbb::UnitTest;
 
 int main(int argc, char *argv[]) {
 
-  Logger::addHandler(IOLogHandler());
+  //Logger::addHandler(IOLogHandler());
 
   // Construct test-runner
   TestRunner runner(std::cout);
 
   // Add suites
+  runner.addSuite(MemoryTest::suite());
   runner.addSuite(ConvolutionTest::suite());
   runner.addSuite(CompoundTest::suite());
   runner.addSuite(ExactSamplerTest::suite());
