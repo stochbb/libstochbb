@@ -37,6 +37,7 @@
 #include <unordered_map>
 #include <cstddef>
 #include <typeinfo>
+#include <mutex>
 
 
 
@@ -63,11 +64,12 @@ public:
 
 protected:
   /** Registers an object with the GC. */
-  inline void add(Object *obj) { _objects.insert(obj); }
+  void add(Object *obj);
 
 protected:
   /** The set of all objects. */
   std::unordered_set<Object *> _objects;
+  std::mutex _lock;
   /** The singleton instance. */
   static GC *_instance;
 
@@ -95,7 +97,7 @@ public:
   /** Increments the reference counter. */
   inline void ref() { _refcount++; }
   /** Decrement the reference counter. */
-  inline void unref() { if (_refcount) _refcount--; if (!_refcount) GC::get().run(); }
+  void unref();
   /** Retruns the reference count. */
   inline size_t refcount() const { return _refcount; }
   /** Prints a textual representation of the object. */

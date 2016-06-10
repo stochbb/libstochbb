@@ -145,6 +145,8 @@ public:
     instance->setUp();
     (instance->*function)();
     instance->tearDown();
+
+    delete instance;
   }
 };
 
@@ -169,6 +171,7 @@ protected:
 public:
   /** Constructor. */
   TestSuite(const std::string &desc);
+  ~TestSuite();
 
   /** Adds a test. */
   void addTest(TestCallerInterface *test);
@@ -200,6 +203,7 @@ protected:
 public:
   /** Constructor. */
   TestRunner(std::ostream &stream);
+  ~TestRunner();
 
   /** Adds a test-suite. */
   void addSuite(TestSuite *suite);

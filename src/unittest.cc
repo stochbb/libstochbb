@@ -70,6 +70,11 @@ TestSuite::TestSuite(const std::string &desc)
   // pass...
 }
 
+TestSuite::~TestSuite() {
+  for (iterator test=tests.begin(); test!=tests.end(); test++)
+    delete *test;
+  tests.clear();
+}
 
 void
 TestSuite::addTest(TestCallerInterface *test)
@@ -127,6 +132,13 @@ TestRunner::TestRunner(std::ostream &stream)
   : stream(stream)
 {
   // Pass...
+}
+
+TestRunner::~TestRunner() {
+  std::list<TestSuite *>::iterator suite=suites.begin();
+  for (; suite != suites.end(); suite++)
+    delete *suite;
+  suites.clear();
 }
 
 

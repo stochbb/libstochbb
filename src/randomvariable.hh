@@ -46,6 +46,7 @@ public:
     if (dependsOn(var)) { return false; }
     std::set<VarObj *>::const_iterator item = var->dependencies().begin();
     for (; item != var->dependencies().end(); item++) {
+      (*item)->ref();
       if (dependsOn(*item)) { return false; }
     }
     return true;

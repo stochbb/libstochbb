@@ -17,7 +17,7 @@ MemoryTest::testNetReassemble() {
   for (size_t i=0; i<100; i++) {
     B1 = gamma(4,4);
     B2 = gamma(5,5);
-    // X = A + minimum(B1, B2) + C;
+    X = A + minimum(B1, B2) + C;
   }
 }
 

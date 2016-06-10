@@ -13,7 +13,7 @@ using namespace stochbb;
 GC *GC::_instance = 0;
 
 GC::GC()
-  : _objects()
+  : _objects(), _lock()
 {
   // pass...
 }
@@ -24,6 +24,7 @@ GC::~GC() {
 
 void
 GC::run() {
+  _lock.lock();
   // Mark all boxed objects:
   std::unordered_set<Object *>::iterator item=_objects.begin();
   for (; item!=_objects.end(); item++) {
@@ -38,6 +39,14 @@ GC::run() {
       item = _objects.erase(item);
     }
   }
+  _lock.unlock();
+}
+
+void
+GC::add(Object *obj) {
+  _lock.lock();
+  _objects.insert(obj);
+  _lock.unlock();
 }
 
 GC&
@@ -60,6 +69,16 @@ Object::Object()
 
 Object::~Object() {
   // pass...
+}
+
+void
+Object::unref() {
+  if (! _refcount) {
+    throw std::exception();
+  }
+  _refcount--;
+  if (!_refcount)
+    GC::get().run();
 }
 
 void
