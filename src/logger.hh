@@ -61,7 +61,7 @@ protected:
 
 /** A stream object assembling a log message. Upon destruction, a log message gets assembled and
  * passed to the logger. */
-class LogMessageStream: public std::stringstream
+class LogMessageStream: public std::ostringstream
 {
 public:
   /** Constructs a ne log message stream at the position @c filename & @c line with the specified
@@ -76,6 +76,7 @@ public:
 
   /** Serializes a container. */
   LogMessageStream &operator<< (const Container &obj);
+  LogMessageStream &operator<< (const double &value);
 
 protected:
   /** The name of the file where the message originated. */

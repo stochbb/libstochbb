@@ -12,6 +12,7 @@
 using namespace stochbb;
 
 
+
 /* ********************************************************************************************* *
  * Implementation of sbb::delta()
  * ********************************************************************************************* */
@@ -579,21 +580,22 @@ operator<<(std::ostream &stream, const stochbb::Container &x) {
  * Implementation of kolmogorov
  * ********************************************************************************************* */
 double
-stochbb::kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &values) {
+stochbb::kolmogorov(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<Eigen::VectorXd> &values) {
   // Copy data
   Eigen::VectorXd ordered_vals(values);
   // sort values
   std::sort(ordered_vals.data(), ordered_vals.data()+ordered_vals.size(), std::less<double>());
-  // get min & max
-  double tmin = std::min(0.0, ordered_vals(0));
-  double tmax = ordered_vals(ordered_vals.size()-1);
+  // check min & max
+  if ((tmin > values.minCoeff()) || (tmax<values.maxCoeff())) {
+    logDebug() << "Some samples lay outside the interval specified for the evaluation of the KS "
+               << "statistic: Specified interval [" << tmin << ", " << tmax
+               << "), data range: [" << values.minCoeff() << ", " << values.maxCoeff() << "].";
+  }
   // prepare eval;
   double dt=(tmax-tmin)/N;
-  // Extend range by one dt
-  tmax += dt; dt = (tmax-tmin)/N;
-  // eval CDF
+  // Extend range by one dt, eval CDF
   Eigen::VectorXd cdf(N+1);
-  X.density().evalCDF(tmin, tmax, cdf);
+  X.density().evalCDF(tmin, tmax+dt, cdf);
   // Eval approx KS statistic
   // In fact, the log likelihood cannot be evaluated reliably, as we evaluate the
   // density of X directly instead of evaluating the log density. Hence the evaluation,
@@ -602,6 +604,8 @@ stochbb::kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &v
   double D = 0;
   size_t M = ordered_vals.size();
   for (size_t i=0; i<M; i++) {
+    if ((tmin > values(i)) || (tmax < values(i)))
+        continue;
     size_t j = (ordered_vals(i)-tmin)/dt;
     D = std::max(D, std::abs(cdf(j)-double(i+1)/M));
     /// @todo Eval KS-statistic instead of returning D.
@@ -613,26 +617,31 @@ stochbb::kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &v
   return D;
 }
 
+
 /* ********************************************************************************************* *
  * Implementation of logLikelihood
  * ********************************************************************************************* */
 double
-stochbb::logLikelihood(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &values) {
-  // get min & max
-  double tmin = std::min(0.0, values.minCoeff());
-  double tmax = values.maxCoeff();
+stochbb::logLikelihood(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<Eigen::VectorXd> &values) {
+  // check min & max
+  if ((tmin > values.minCoeff()) || (tmax<values.maxCoeff())) {
+    logWarning() << "Some samples lay outside the interval specified for the evaluation of the "
+                    "log likelihood: Specified interval [" << tmin << ", " << tmax
+                 << "), data range: [" << values.minCoeff() << ", " << values.maxCoeff() << "].";
+  }
   // prepare eval;
   double dt=(tmax-tmin)/N;
-  // Extend range by one dt
-  tmax += dt; dt = (tmax-tmin)/N;
-  // eval CDF
+  // Extend range by one dt, eval PDF
   Eigen::VectorXd pdf(N+1);
-  X.density().eval(tmin, tmax, pdf);
+  X.density().eval(tmin, tmax+dt, pdf);
   // Eval approx log Likelihood
   double ll = 0;
   for (int i=0; i<values.size(); i++) {
+    if ((tmin > values(i)) || (tmax < values(i)))
+        continue;
     size_t j = (values(i)-tmin)/dt;
-    ll += std::log(pdf(j));
+    double r = (values(i)-pdf(j))/dt;
+    ll += std::log((1-r)*pdf(j) + r*pdf(j+1));
   }
   // done.
   return ll;

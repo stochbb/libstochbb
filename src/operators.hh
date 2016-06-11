@@ -294,13 +294,13 @@ Density directConvolve(const Density &a, const Density &b);
  * @ingroup api */
 Density directConvolve(const Density &a, const Density &b, const Density &c);
 
-/** Evaluates the Kolmogorov-Smirnov statistic (KS) of the given data using a N-point piece-wise
- * linear approximation of the CDF function. */
-double kolmogorov(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &values);
+/** Evaluates the Kolmogorov-Smirnov statistic (KS) of the given data using a N-point approximation
+ * of the CDF function on the intervall \f$[tmin, tmax)\f$. */
+double kolmogorov(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<Eigen::VectorXd> &values);
 
 /** Evaluates the log Likelihood of the given data using a N-point piece-wise
- * linear approximation of the PDF function. */
-double logLikelihood(const Var &X, size_t N, const Eigen::Ref<Eigen::VectorXd> &values);
+ * linear approximation of the PDF function on the intervall \f$[tmin, tmax)\f$. */
+double logLikelihood(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<Eigen::VectorXd> &values);
 
 }
 

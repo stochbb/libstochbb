@@ -65,13 +65,13 @@ LogMessage::timestamp() const {
  * Implementation of LogMessageStream
  * ********************************************************************************************* */
 LogMessageStream::LogMessageStream(const std::string &filename, int line, LogMessage::Level level)
-  : std::stringstream(), _filename(filename), _line(line), _level(level)
+  : std::ostringstream(), _filename(filename), _line(line), _level(level)
 {
   // pass...
 }
 
 LogMessageStream::LogMessageStream(const LogMessageStream &other)
-  : std::stringstream(), _filename(other._filename), _line(other._line), _level(other._level)
+  : std::ostringstream(), _filename(other._filename), _line(other._line), _level(other._level)
 {
   this->str(other.str());
 }
@@ -86,6 +86,11 @@ LogMessageStream::operator<<(const Container &obj) {
   return *this;
 }
 
+LogMessageStream &
+LogMessageStream::operator<<(const double &value) {
+  std::ostringstream::operator <<(value);
+  return *this;
+}
 
 /* ********************************************************************************************* *
  * Implementation of LogHandlerObj
