@@ -604,7 +604,7 @@ stochbb::kolmogorov(const Var &X, double tmin, double tmax, size_t N, const Eige
   double D = 0;
   size_t M = ordered_vals.size();
   for (size_t i=0; i<M; i++) {
-    if ((tmin > values(i)) || (tmax < values(i)))
+    if ((tmin > ordered_vals(i)) || (tmax < ordered_vals(i)))
         continue;
     size_t j = (ordered_vals(i)-tmin)/dt;
     D = std::max(D, std::abs(cdf(j)-double(i+1)/M));
@@ -637,7 +637,7 @@ stochbb::logLikelihood(const Var &X, double tmin, double tmax, size_t N, const E
   // Eval approx log Likelihood
   double ll = 0;
   for (int i=0; i<values.size(); i++) {
-    if ((tmin > values(i)) || (tmax < values(i)))
+    if ((tmin > values(i)) || (tmax <= values(i)))
         continue;
     size_t j = (values(i)-tmin)/dt;
     double r = (values(i)-pdf(j))/dt;
