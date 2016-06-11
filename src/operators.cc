@@ -641,7 +641,6 @@ stochbb::logLikelihood(const Var &X, double tmin, double tmax, size_t N, const E
         continue;
     size_t j = (values(i)-tmin)/dt;
     double r = (values(i)-tmin-dt*j)/dt;
-    std::cerr << "R: " << r << std::endl;
     ll += std::log((1-r)*pdf(j) + r*pdf(j+1));
   }
   // done.
