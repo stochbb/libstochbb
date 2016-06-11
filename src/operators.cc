@@ -580,7 +580,7 @@ operator<<(std::ostream &stream, const stochbb::Container &x) {
  * Implementation of kolmogorov
  * ********************************************************************************************* */
 double
-stochbb::kolmogorov(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<Eigen::VectorXd> &values) {
+stochbb::kolmogorov(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<const Eigen::VectorXd> &values) {
   // Copy data
   Eigen::VectorXd ordered_vals(values);
   // sort values
@@ -622,7 +622,7 @@ stochbb::kolmogorov(const Var &X, double tmin, double tmax, size_t N, const Eige
  * Implementation of logLikelihood
  * ********************************************************************************************* */
 double
-stochbb::logLikelihood(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<Eigen::VectorXd> &values) {
+stochbb::logLikelihood(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<const Eigen::VectorXd> &values) {
   // check min & max
   if ((tmin > values.minCoeff()) || (tmax<values.maxCoeff())) {
     logWarning() << "Some samples lay outside the interval specified for the evaluation of the "
