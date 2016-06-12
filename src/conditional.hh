@@ -81,7 +81,7 @@ protected:
 };
 
 
-/** Implements the density of a conditional chained variable.
+/** Implements the density of a conditional sum of random variables variable.
  * That is
  * \f[
  *  Z = \begin{cases}
@@ -91,19 +91,19 @@ protected:
  * \f]
  * where \f$X_1, X_2, Y_1\f$ and \f$X_1, X_2, Y_2\f$ are mutually independent.
  * This means that Z is the sum (chain) of \f$X_1\f$ and \f$Y_1\f$ if \f$X_1<X_2\f$ and
- * the sum (chain) of \f$X_2\f$ and \f$Y_2\f$ else. Please note that this
+ * the sum of \f$X_2\f$ and \f$Y_2\f$ else. Please note that this
  * random variable cannot be implemented useing the @c ConditionalObj class as e.g.
  * \f$X_1+Y_1\f$ (one possible outcome) depends trivially on \f$X_1\f$ (part of the condition).
  * @ingroup density */
-class CondChainDensityObj: public DensityObj
+class CondSumDensityObj: public DensityObj
 {
-protected:
-  /** Constructs a @c CondChainDensityObj from the given densities. */
-  CondChainDensityObj(DensityObj *X1, DensityObj *X2, DensityObj *Y1, DensityObj *Y2) throw (Error);
-
 public:
-  /** Constructs a @c CondChainDensityObj from the given variables. */
-  CondChainDensityObj(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2) throw (Error);
+  /** Constructs a @c CondSumDensityObj from the given variables. */
+  CondSumDensityObj(const Density &X1, const Density &X2, const Density &Y1, const Density &Y2) throw (Error);
+
+  /** Constructs a @c CondSumDensityObj from the given variables. */
+  CondSumDensityObj(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2) throw (Error);
+
   virtual void mark();
 
   virtual void eval(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out) const;
@@ -126,7 +126,7 @@ protected:
 };
 
 
-/** This class implements a random variable object that represents conditionally chained random
+/** This class implements a random variable object that represents conditional sum of random
  * variables. That is
  * \f[
  *  Z = \begin{cases}
@@ -136,15 +136,15 @@ protected:
  * \f]
  * where \f$X_1, X_2, Y_1\f$ and \f$X_1, X_2, Y_2\f$ are mutually independent.
  * This means that Z is the sum (chain) of \f$X_1\f$ and \f$Y_1\f$ if \f$X_1<X_2\f$ and
- * the sum (chain) of \f$X_2\f$ and \f$Y_2\f$ else. Please note that this
+ * the sum of \f$X_2\f$ and \f$Y_2\f$ else. Please note that this
  * random variable cannot be implemented useing the @c ConditionalObj class as e.g.
  * \f$X_1+Y_1\f$ (one possible outcome) depends trivially on \f$X_1\f$ (part of the condition).
  * @ingroup rv */
-class CondChainObj: public DerivedVarObj
+class CondSumObj: public DerivedVarObj
 {
 public:
-  /** Constructs the cond. chained RV object from the given random variables. */
-  CondChainObj(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2, const std::string &name="");
+  /** Constructs the cond. sum RV object from the given random variables. */
+  CondSumObj(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2, const std::string &name="");
   virtual void mark();
 
   virtual Density density();
@@ -155,7 +155,7 @@ public:
 
 protected:
   /** Holds a reference to the associated density. */
-  CondChainDensityObj *_density;
+  CondSumDensityObj *_density;
 };
 
 }

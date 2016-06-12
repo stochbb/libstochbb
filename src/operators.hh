@@ -272,12 +272,12 @@ Var mixture(const std::vector<double> &weights, const std::vector<Var> &variable
  * @ingroup api */
 Var conditional(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2) throw (Error);
 
-/** Constructs a conditional chained random variable. That is
+/** Constructs a conditional sum of random variable. That is
  * \f[
  *  Z = \begin{cases}X_1+Y_1 & if\, X_1<X_2 \\ X_2+Y_2 & else.\end{cases}
  * \f]
  * @ingroup api */
-Var condchain(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2) throw (Error);
+Var condsum(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2) throw (Error);
 
 /** Performs a direct convolution of the given densities without resorting to analytical solutions.
  * This function is mainly used for testing the numerical convolution algorithm.

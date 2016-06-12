@@ -37,7 +37,7 @@ class MaximumObj;
 class MinimumObj;
 class MixtureObj;
 class ConditionalObj;
-class CondChainObj;
+class CondSumObj;
 class CompoundObj;
 class ExactSamplerObj;
 class MarginalSamplerObj;
@@ -690,25 +690,25 @@ protected:
  * \f]
  * is implemented by this class.
  * @ingroup api */
-class CondChain: public DerivedVar
+class CondSum: public DerivedVar
 {
 public:
   /** Object type of the container. */
-  typedef CondChainObj ObjectType;
+  typedef CondSumObj ObjectType;
 
 public:
   /** Constructs a conditional chain random variable from the given RVs. */
-  CondChain(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2, const std::string &name="");
+  CondSum(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2, const std::string &name="");
   /** Packs the @c CondChainObj instance. */
-  CondChain(CondChainObj *obj);
+  CondSum(CondSumObj *obj);
   /** Copy constructor. */
-  CondChain(const CondChain &other);
+  CondSum(const CondSum &other);
   /** Assignment operator. */
-  CondChain &operator=(const CondChain &other);
+  CondSum &operator=(const CondSum &other);
 
 protected:
   /** Holds a weak reference to the @c CondChainObj instance. */
-  CondChainObj *_condchain;
+  CondSumObj *_condchain;
 };
 
 

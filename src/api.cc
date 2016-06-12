@@ -683,27 +683,27 @@ Conditional::operator =(const Conditional &other) {
 /* ********************************************************************************************* *
  * Implementation of CondChain container
  * ********************************************************************************************* */
-CondChain::CondChain(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2, const std::string &name)
-  : DerivedVar(new CondChainObj(X1, X2, Y1, Y2, name)),
-    _condchain(static_cast<CondChainObj *>(_object))
+CondSum::CondSum(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2, const std::string &name)
+  : DerivedVar(new CondSumObj(X1, X2, Y1, Y2, name)),
+    _condchain(static_cast<CondSumObj *>(_object))
 {
   // pass...
 }
 
-CondChain::CondChain(CondChainObj *obj)
+CondSum::CondSum(CondSumObj *obj)
   : DerivedVar(obj), _condchain(obj)
 {
   // pass...
 }
 
-CondChain::CondChain(const CondChain &other)
+CondSum::CondSum(const CondSum &other)
   : DerivedVar(other), _condchain(other._condchain)
 {
   // pass...
 }
 
-CondChain &
-CondChain::operator =(const CondChain &other) {
+CondSum &
+CondSum::operator =(const CondSum &other) {
   DerivedVar::operator =(other);
   _condchain = other._condchain;
   return *this;

@@ -170,14 +170,14 @@ ConditionalObj::print(std::ostream &stream) const {
 /* ********************************************************************************************* *
  * Implementation of CondChainDensityObj
  * ********************************************************************************************* */
-CondChainDensityObj::CondChainDensityObj(
-    DensityObj *X1, DensityObj *X2, DensityObj *Y1, DensityObj *Y2) throw (Error)
-  : DensityObj(), _X1(X1), _X2(X2), _Y1(Y1), _Y2(Y2)
+CondSumDensityObj::CondSumDensityObj(
+    const Density &X1, const Density &X2, const Density &Y1, const Density &Y2)  throw (Error)
+  : DensityObj(), _X1(*X1), _X2(*X2), _Y1(*Y1), _Y2(*Y2)
 {
   // pass...
 }
 
-CondChainDensityObj::CondChainDensityObj(
+CondSumDensityObj::CondSumDensityObj(
     const Var &X1, const Var &X2, const Var &Y1, const Var &Y2)  throw (Error)
   : DensityObj(), _X1(0), _X2(0), _Y1(0), _Y2(0)
 {
@@ -186,7 +186,7 @@ CondChainDensityObj::CondChainDensityObj(
 }
 
 void
-CondChainDensityObj::mark() {
+CondSumDensityObj::mark() {
   if (isMarked()) { return; }
   DensityObj::mark();
   if (_X1) { _X1->mark(); }
@@ -196,7 +196,7 @@ CondChainDensityObj::mark() {
 }
 
 void
-CondChainDensityObj::eval(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out) const {
+CondSumDensityObj::eval(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out) const {
   Eigen::FFT<double> fft;
   Eigen::VectorXd tmp1(2*out.size());  tmp1.setZero();
   Eigen::VectorXcd tmp2(2*out.size());
@@ -254,7 +254,7 @@ CondChainDensityObj::eval(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> 
 }
 
 void
-CondChainDensityObj::evalCDF(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out) const {
+CondSumDensityObj::evalCDF(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out) const {
   if (0 == out.size()) { return; }
   double dt = (Tmax-Tmin)/(out.size());
   this->eval(Tmin, Tmax, out);
@@ -265,14 +265,14 @@ CondChainDensityObj::evalCDF(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorX
 }
 
 Density
-CondChainDensityObj::affine(double scale, double shift) const {
+CondSumDensityObj::affine(double scale, double shift) const {
   // Simply apply affine transform on all densities
-  return new CondChainDensityObj(*_X1->affine(scale, 0), *_X2->affine(scale, 0),
-                                 *_Y1->affine(scale, shift), *_Y2->affine(scale, shift));
+  return new CondSumDensityObj(_X1->affine(scale, 0), _X2->affine(scale, 0),
+                               _Y1->affine(scale, shift), _Y2->affine(scale, shift));
 }
 
 void
-CondChainDensityObj::rangeEst(double alpha, double &a, double &b) const {
+CondSumDensityObj::rangeEst(double alpha, double &a, double &b) const {
   double a_x1, b_x1, a_x2, b_x2, a_y1, b_y1, a_y2, b_y2;
   _X1->rangeEst(alpha, a_x1, b_x1);
   _X2->rangeEst(alpha, a_x2, b_x2);
@@ -285,11 +285,11 @@ CondChainDensityObj::rangeEst(double alpha, double &a, double &b) const {
 }
 
 int
-CondChainDensityObj::compare(const DensityObj &other) const {
+CondSumDensityObj::compare(const DensityObj &other) const {
   // compare by type
   if (int cmp = DensityObj::compare(other))
     return cmp;
-  const CondChainDensityObj &oobj = dynamic_cast<const CondChainDensityObj &>(other);
+  const CondSumDensityObj &oobj = dynamic_cast<const CondSumDensityObj &>(other);
 
   // compare X1, X2, Y1 and Y2;
   if (int cmp = _X1->compare(*oobj._X1))
@@ -304,7 +304,7 @@ CondChainDensityObj::compare(const DensityObj &other) const {
 }
 
 void
-CondChainDensityObj::print(std::ostream &stream) const {
+CondSumDensityObj::print(std::ostream &stream) const {
   stream << "<CondChainDensity of X1~";
   _X1->print(stream);
   stream << " X2~";
@@ -320,15 +320,15 @@ CondChainDensityObj::print(std::ostream &stream) const {
 /* ********************************************************************************************* *
  * Implementation of CondChainObj
  * ********************************************************************************************* */
-CondChainObj::CondChainObj(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2, const std::string &name)
+CondSumObj::CondSumObj(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2, const std::string &name)
   : DerivedVarObj(std::vector<Var> {X1, X2, Y1, Y2}, name), _density(0)
 {
-  _density = new CondChainDensityObj(X1, X2, Y1, Y2);
+  _density = new CondSumDensityObj(X1, X2, Y1, Y2);
   _density->unref();
 }
 
 void
-CondChainObj::mark() {
+CondSumObj::mark() {
   if (isMarked()) { return; }
   DerivedVarObj::mark();
   if (_density)
@@ -336,14 +336,14 @@ CondChainObj::mark() {
 }
 
 Density
-CondChainObj::density() {
+CondSumObj::density() {
   if (_density)
     _density->ref();
   return _density;
 }
 
 void
-CondChainObj::print(std::ostream &stream) const {
+CondSumObj::print(std::ostream &stream) const {
   stream << "<CondChain X1="; _variables[0]->print(stream);
   stream << " X2="; _variables[1]->print(stream);
   stream << " Y1="; _variables[2]->print(stream);
@@ -355,7 +355,7 @@ CondChainObj::print(std::ostream &stream) const {
 }
 
 void
-CondChainObj::sample(size_t outIdx, const Eigen::Ref<IndexVector> &indices,
+CondSumObj::sample(size_t outIdx, const Eigen::Ref<IndexVector> &indices,
                      Eigen::Ref<Eigen::MatrixXd> samples) const
 {
   for (int i=0; i<samples.rows(); i++) {

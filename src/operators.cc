@@ -527,7 +527,7 @@ stochbb::conditional(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2)
  * Implementation of condchain
  * ********************************************************************************************* */
 Var
-stochbb::condchain(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2) throw (Error) {
+stochbb::condsum(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2) throw (Error) {
   std::vector<Var> args = {X1, X2};
   Var common = splitCommon(args);
   // Check for independence (Y1 and Y2 are allowed to be dependent RVs).
@@ -543,7 +543,7 @@ stochbb::condchain(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2) t
            " Variables X1, X2, Y2 are not mutually independent.";
     throw err;
   }
-  return Var(new CondChainObj(args[0], args[1], Y1, Y2)) + common;
+  return Var(new CondSumObj(args[0], args[1], Y1, Y2)) + common;
 }
 
 
