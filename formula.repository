@@ -1,0 +1,77 @@
+\form#0:$Y = a\,X + b$
+\form#1:$a$
+\form#2:$b$
+\form#3:$X\sim f(x)$
+\form#4:$Y = f\left(\frac{x-b}{a}\right)$
+\form#5:$Y = a\,X+b$
+\form#6:$X_i, i=1,\dots,N$
+\form#7:$Y = \sum_i X_i$
+\form#8:$X_1$
+\form#9:$X_2$
+\form#10:$N$
+\form#11:$X_i,i=1,\dots,N$
+\form#12:$Y = \max\{X_1,\dots, X_N\}$
+\form#13:$X_i$
+\form#14:$Y = \min\{X_1,\dots, X_n\}$
+\form#15:$X_1, X_2$
+\form#16:$Y_1$
+\form#17:$Y_2$
+\form#18:$Z$
+\form#19:\[ Z = \begin{cases} Y_1 & if\, X_1<X_2 \\ Y_2 & else, \end{cases} \]
+\form#20:\[ Z = \begin{cases} X_1 + Y_1 & if\, X_1<X_2 \\ X_2 + Y_2 & else, \end{cases} \]
+\form#21:$X|A \sim f(x|A)$
+\form#22:$A \sim f(a|\theta)$
+\form#23:$X$
+\form#24:$f(x|\theta) = \int f(x|a)\,f(a|\theta)\,da$
+\form#25:$[Tmin, Tmax)$
+\form#26:$\alpha$
+\form#27:$[T_{min}, T_{max})$
+\form#28:\[ Z = \begin{cases} Y_1 & \mbox{if }\, X_1 < X_2\\ Y_2 & \mbox{else.} \end{cases} \]
+\form#29:$X_1,X_2,Y_1$
+\form#30:$X_1,X_2,Y_2$
+\form#31:$X_1<X_2$
+\form#32:$p_{X_1<X_2}=\int F_{X_1}(x)\,f_{X_2}(x)\,dx$
+\form#33:$f(x) = p_{X_1<X_2}\,f_{Y_1}(x) + (1- p_{X_1<X_2})f_{Y_2}(x) $
+\form#34:\[ Z = \begin{cases} Y_1 & \text{ if } X_1 < X_2\\ Y_2 & \text{else.} \end{cases} \]
+\form#35:\[ Z = \begin{cases} X_1+Y_1 & \text{ if } X_1 < X_2\\ X_2+Y_2 & \text{else,} \end{cases} \]
+\form#36:$X_1, X_2, Y_1$
+\form#37:$X_1, X_2, Y_2$
+\form#38:$X_1+Y_1$
+\form#39:$X_1>X_2$
+\form#40:$f(x) \mapsto f(a\,x+b)$
+\form#41:$[scale, shift, ...]$
+\form#42:$f\left(\frac{x-shift}{scale}, ...\right)$
+\form#43:$F_X(x)$
+\form#44:$Y = F_X(X)$
+\form#45:$[0,1]$
+\form#46:$F_X^{-1}(Y)$
+\form#47:$Y$
+\form#48:\[ Y = \sum_i X_i\,. \]
+\form#49:\[ Y = X_1+X_2\,. \]
+\form#50:\[ Y = X_1+X_2+X_3\,. \]
+\form#51:\[ Y = min(X_1, X_2, ..., X_N)\,. \]
+\form#52:\[ Y = min(X_1+X_2,X_1+X_3) \longrightarrow Y = X_1+min(X_2,X_3)\,, \]
+\form#53:$X_3$
+\form#54:\[ Y = min(X_1, X_2)\,. \]
+\form#55:\[ Y = min(X_1, X_2, X_3)\,. \]
+\form#56:\[ Y = max(X_1, X_2, ..., X_N)\,. \]
+\form#57:\[ Y = max(X_1+X_2,X_1+X_3) \longrightarrow Y = X_1+max(X_2,X_3)\,, \]
+\form#58:\[ Y = max(X_1, X_2)\,. \]
+\form#59:\[ Y = max(X_1, X_2, X_3)\,. \]
+\form#60:\[ Z = \begin{cases}Y_1 & if\, X_1<X_2 \\ Y_2 & else.\end{cases} \]
+\form#61:\[ Z = \begin{cases}X_1+Y_1 & if\, X_1<X_2 \\ X_2+Y_2 & else.\end{cases} \]
+\form#62:$[tmin, tmax)$
+\form#63:$\delta(x-a)\ast f(x) \rightarrow f(x-a)$
+\form#64:$f(x,\mu_1, \sigma_1^2)\ast f(x; \mu_2, \sigma^2_2) \rightarrow f(x;\mu_1+\mu_2, \sigma_1^2+\sigma_2^2)$
+\form#65:$f(x,k_1, \theta)\ast f(x; k_2, \theta) \rightarrow f(x;k_1+k_2, \theta)$
+\form#66:$X \sim f,\, Y\sim\delta(y-X)\rightarrow X$
+\form#67:$\mu \sim f,\, X \sim \mathcal{N}(\mu, \sigma^2)\rightarrow X \sim f\ast \mathcal{N}(0,\sigma^2)$
+\form#68:\[ X_1 \sim \Gamma(10, 100)\,, X_2 \sim \Gamma(20, 50)\text{ and } X_3 \sim \text{Exp}(0.01)\,, \]
+\form#69:$k=10$
+\form#70:$\theta=100$
+\form#71:$X_1,\dots,X_3$
+\form#72:\[ Y = X_1 + X_2 + X_3\,. \]
+\form#73:$Y = X_1 + X_3 + X_2$
+\form#74:$Y = X_1 + X_2 + X_3$
+\form#75:$X' = (X_1+X_3)\sim\Gamma(11,100)$
+\form#76:$Y = X_2 + X'$
