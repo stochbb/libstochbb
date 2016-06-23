@@ -4,6 +4,7 @@
 #include "logger.hh"
 #include "distribution.hh"
 #include "reduction.hh"
+#include "derivedensity.hh"
 
 #include <unsupported/Eigen/FFT>
 #include <list>
@@ -12,49 +13,6 @@
 
 
 using namespace stochbb;
-
-// tiny helper function to sort vectors of densities
-inline int density_compare(const Density &a, const Density &b) {
-  return a.compare(b);
-}
-
-/* ********************************************************************************************* *
- * combine densities
- * ********************************************************************************************* */
-Density
-stochbb::convolve(const std::vector<Density> &densities, double scale, double shift) {
-  // copy vector
-  std::vector<Density> dens(densities);
-  // Sort densities w.r.t type and parameters
-  std::sort(dens.begin(), dens.end(), density_compare);
-
-  // Get reduction rules
-  ConvolutionReductions &rules = ConvolutionReductions::get();
-
-  // Try to combine some of the densities
-  std::vector<Density>::iterator last = dens.begin();
-  std::vector<Density>::iterator current = dens.begin(); current++;
-  while (current != dens.end()) {
-    if (ConvolutionReductionRule *rule = rules.find(*last, *current)) {
-      // If densities can be combined -> combine & replace last density
-      *last = rule->apply(*last, *current);
-      // erase combined density
-      current = dens.erase(current);
-    } else {
-      // If densities cannot be combined -> advance iterators
-      last++; current++;
-    }
-  }
-
-  if (1 == dens.size()) {
-    // If only one density is left -> unpack
-    return dens.back();
-  }
-
-  // Otherwise construct convolution density from list of densities
-  return new ConvolutionDensityObj(dens);
-}
-
 
 /* ********************************************************************************************* *
  * Implementation of ConvolutionDensityObj
@@ -223,24 +181,9 @@ ConvolutionDensityObj::print(std::ostream &stream) const {
  * Implementation of ChainObj
  * ********************************************************************************************* */
 ChainObj::ChainObj(const std::vector<Var> &variables, const std::string &name)
-  : DerivedVarObj(variables, name), _density(0)
+  : DerivedVarObj(variables, name)
 {
-  // Check for independence
-  if (! independent(variables)) {
-    AssumptionError err;
-    err << "Cannot create chain: Variables not independent.";
-    throw err;
-  }
-
-  // Get vector of densities
-  std::vector<Density> dens; dens.reserve(variables.size());
-  for (size_t i=0; i<variables.size(); i++) {
-    dens.push_back(variables[i].density());
-  }
-
-  // Assemble convolution density
-  Density res = convolve(dens);
-  _density = *res;
+  // pass...
 }
 
 ChainObj::~ChainObj() {
@@ -251,15 +194,6 @@ void
 ChainObj::mark() {
   if (isMarked()) { return; }
   DerivedVarObj::mark();
-  // mark density
-  if (_density) {
-    _density->mark();
-  }
-}
-
-Density ChainObj::density() {
-  _density->ref();
-  return _density;
 }
 
 void
@@ -268,7 +202,6 @@ ChainObj::print(std::ostream &stream) const {
   for (size_t i=0; i<_variables.size(); i++) {
     stream << " "; _variables[i]->print(stream);
   }
-  stream << " density="; _density->print(stream);
   stream << " #" << this << ">";
 }
 

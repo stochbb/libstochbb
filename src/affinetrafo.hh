@@ -20,8 +20,6 @@ public:
 
   virtual void mark();
 
-  virtual Density density();
-
   /** Returns the scale factor of the affine transform. */
   inline double scale() const { return _scale; }
   /** Returns the shift of the affine transform. */
@@ -33,9 +31,7 @@ public:
                       Eigen::Ref<Eigen::MatrixXd> samples) const;
 
 protected:
-  /** The density of the scaled and shifted RV. */
-  DensityObj *_density;
-  /** The scale parameter. */
+ /** The scale parameter. */
   double _scale;
   /** The shift parameter. */
   double _shift;

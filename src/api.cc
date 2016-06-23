@@ -97,7 +97,7 @@ Var::operator =(const Var &other) {
 }
 
 Density
-Var::density() const {
+Var::density() const throw (Error) {
   return _randomVariable->density();
 }
 
@@ -730,6 +730,11 @@ Compound::operator =(const Compound &other) {
   DerivedVar::operator =(other);
   _compound = other._compound;
   return *this;
+}
+
+Distribution
+Compound::distribution() const {
+  return _compound->distribution();
 }
 
 

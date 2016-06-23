@@ -21,11 +21,19 @@ namespace stochbb {
  * @ingroup density */
 class CompoundDensityObj: public DensityObj
 {
-public:
-  /** Constructs a compound density with the given distribution family and parameter distributions.
+protected:
+  /** Hidden constructor. Constructs a compound density with the given distribution family and
+   * parameter distributions.
    * @param dist Specifies the distribution.
    * @param params Specifies the parameter distributions (weak references). */
   CompoundDensityObj(const Distribution &dist, const std::vector<DensityObj *> &params);
+
+public:
+  /** Constructs a compound density with the given distribution family and
+   * parameter distributions.
+   * @param dist Specifies the distribution.
+   * @param params Specifies the parameter distributions. */
+  CompoundDensityObj(const Distribution &dist, const std::vector<Density> &params);
 
   /** Destructor. */
   virtual ~CompoundDensityObj();
@@ -78,8 +86,6 @@ public:
 
   virtual void mark();
 
-  virtual Density density();
-
   /** Retruns the distribution of the compound variable. */
   Distribution distribution();
 
@@ -96,8 +102,6 @@ protected:
    * density of this object may not be an instance of this distribution as it may have been reduced
    * to some other density upon construction. */
   DistributionObj *_distribution;
-  /** A reference to the density. */
-  DensityObj *_density;
   /** The vector of parameter variables. */
   std::vector<VarObj *> _parameters;
 };

@@ -13,21 +13,12 @@ using namespace stochbb;
  * Implementation of GenericCompoundObj
  * ********************************************************************************************* */
 CompoundObj::CompoundObj(const std::vector<Var> &vars, const Distribution &distribution, const std::string &name)
-  : DerivedVarObj(vars, name), _distribution(*distribution), _density(0), _parameters()
+  : DerivedVarObj(vars, name), _distribution(*distribution), _parameters()
 {
-  std::vector<DensityObj *> densities;
-  densities.reserve(vars.size()); _parameters.reserve(vars.size());
+  _parameters.reserve(vars.size());
   for (size_t i=0; i<vars.size(); i++) {
     _parameters.push_back(*vars[i]);
-    densities.push_back(*vars[i].density());
   }
-  Density density = new CompoundDensityObj(distribution, densities);
-  // try to simplify density
-  while (CompoundReductionRule *rule = CompoundReductions::get().find(density)) {
-    density = rule->apply(density);
-  }
-  // finally store density
-  _density = *density;
 }
 
 void
@@ -37,17 +28,9 @@ CompoundObj::mark() {
   DerivedVarObj::mark();
   if (_distribution)
     _distribution->mark();
-  if (_density)
-    _density->mark();
   for (size_t i=0; i<_parameters.size(); i++) {
     _parameters[i]->mark();
   }
-}
-
-Density
-CompoundObj::density() {
-  _density->ref();
-  return _density;
 }
 
 Distribution
@@ -71,7 +54,6 @@ CompoundObj::print(std::ostream &stream) const {
   for (size_t i=1; i<_parameters.size(); i++) {
     stream << ", "; _parameters[i]->print(stream);
   }
-  stream << " desity="; _density->print(stream);
   stream << " #" << this << ">";
 }
 
@@ -101,6 +83,17 @@ CompoundDensityObj::CompoundDensityObj(const Distribution &dist, const std::vect
   logDebug() << "Construct compound density object for distribution " << dist << "...";
 
   assume(_distribution->nParams() == _parameters.size());
+}
+
+CompoundDensityObj::CompoundDensityObj(const Distribution &dist, const std::vector<Density> &params)
+  : DensityObj(), _distribution(*dist), _parameters()
+{
+  logDebug() << "Construct compound density object for distribution " << dist << "...";
+
+  assume(_distribution->nParams() == params.size());
+  _parameters.reserve(params.size());
+  for (size_t i=0; i<params.size(); i++)
+    _parameters.push_back(*params[i]);
 }
 
 CompoundDensityObj::~CompoundDensityObj() {

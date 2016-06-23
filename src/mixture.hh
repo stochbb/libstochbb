@@ -19,7 +19,7 @@ protected:
 
 public:
   /** Constructs a mixture density from the given weights and variables. */
-  MixtureDensityObj(const std::vector<double> &weights, const std::vector<VarObj *> &variables,
+  MixtureDensityObj(const std::vector<double> &weights, const std::vector<Var> &variables,
                     double scale=1, double shift=0);
 
   virtual void mark();
@@ -52,7 +52,6 @@ public:
              const std::string &name="") throw (Error);
 
   virtual void mark();
-  virtual Density density();
 
   /** Returns the weight of the i-th random variable. */
   inline double weight(size_t i) const { return _weights[i]; }
@@ -64,8 +63,6 @@ public:
 protected:
   /** The vector of weights. */
   std::vector<double> _weights;
-  /** The density of the mixture. */
-  MixtureDensityObj *_density;
 };
 
 }

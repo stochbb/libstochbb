@@ -68,16 +68,10 @@ public:
 
   virtual void mark();
 
-  virtual Density density();
-
   virtual void sample(size_t outIdx, const Eigen::Ref<IndexVector> &indices,
                       Eigen::Ref<Eigen::MatrixXd> samples) const;
 
   virtual void print(std::ostream &stream) const;
-
-protected:
-  /** A reference to the density object. */
-  ConditionalDensityObj *_density;
 };
 
 
@@ -147,15 +141,9 @@ public:
   CondSumObj(const Var &X1, const Var &X2, const Var &Y1, const Var &Y2, const std::string &name="");
   virtual void mark();
 
-  virtual Density density();
-
   virtual void print(std::ostream &stream) const;
   virtual void sample(size_t outIdx, const Eigen::Ref<IndexVector> &indices,
                       Eigen::Ref<Eigen::MatrixXd> samples) const;
-
-protected:
-  /** Holds a reference to the associated density. */
-  CondSumDensityObj *_density;
 };
 
 }

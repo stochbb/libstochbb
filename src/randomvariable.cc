@@ -1,5 +1,6 @@
 #include "randomvariable.hh"
 #include <sstream>
+#include "derivedensity.hh"
 
 using namespace stochbb;
 
@@ -65,7 +66,7 @@ AtomicVarObj::mark() {
 }
 
 Density
-AtomicVarObj::density() {
+AtomicVarObj::density() throw (Error) {
   _density->ref();
   return _density;
 }
@@ -104,6 +105,12 @@ DerivedVarObj::mark() {
   if (isMarked()) { return; }
   VarObj::mark();
   // all dependent variable objects are marked by VarObj::mark() through _dependencies
+}
+
+Density
+DerivedVarObj::density() throw (Error) {
+  this->ref();
+  return deriveDensity(DerivedVar(this));
 }
 
 void

@@ -29,7 +29,7 @@ public:
   virtual void mark();
 
   /** Retruns the @c DensityObj of the random variable. */
-  virtual Density density() = 0;
+  virtual Density density() throw (Error) = 0;
 
   /** Returns the set of random variables, this RV depends on. */
   inline const std::set<VarObj *> &dependencies() const {
@@ -84,7 +84,7 @@ public:
   virtual ~AtomicVarObj();
 
   virtual void mark();
-  virtual Density density();
+  virtual Density density() throw (Error);
 
   /** Samples from the random variable. The number of samples is specified through the number
    * of rows of the @c out vector. */
@@ -119,6 +119,9 @@ protected:
 
 public:
   virtual void mark();
+
+  /** Derives the density of the variable. */
+  virtual Density density() throw (Error);
 
   /** Returns the number of underlying random variables. */
   inline size_t numVariables() const { return _variables.size(); }

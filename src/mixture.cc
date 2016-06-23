@@ -25,7 +25,7 @@ MixtureDensityObj::MixtureDensityObj(const std::vector<double> &weights, const s
   // pass...
 }
 
-MixtureDensityObj::MixtureDensityObj(const std::vector<double> &weights, const std::vector<VarObj *> &variables,
+MixtureDensityObj::MixtureDensityObj(const std::vector<double> &weights, const std::vector<Var> &variables,
                                      double scale, double shift)
   : DensityObj(), _weights(weights), _densities(), _scale(scale), _shift(shift)
 {
@@ -36,7 +36,7 @@ MixtureDensityObj::MixtureDensityObj(const std::vector<double> &weights, const s
   // Store densities
   _densities.reserve(variables.size());
   for (size_t i=0; i<variables.size(); i++) {
-    _densities.push_back(*variables[i]->density());
+    _densities.push_back(*variables[i].density());
   }
 }
 
@@ -136,31 +136,20 @@ MixtureDensityObj::print(std::ostream &stream) const {
  * ********************************************************************************************* */
 MixtureObj::MixtureObj(const std::vector<double> &weights, const std::vector<Var> &variables,
                        const std::string &name) throw (Error)
-  : DerivedVarObj(variables, name), _weights(weights), _density(0)
+  : DerivedVarObj(variables, name), _weights(weights)
 {
   if (_weights.size() != variables.size()) {
     AssumptionError err;
     err << "Cannot create MixtureObj, number of weights must match number of variables.";
     throw err;
   }
-
-  _density = new MixtureDensityObj(_weights, _variables);
-  _density->unref();
 }
 
 void
 MixtureObj::mark() {
   if (isMarked()) { return; }
   DerivedVarObj::mark();
-  if (_density) { _density->mark(); }
 }
-
-Density
-MixtureObj::density() {
-  _density->ref();
-  return _density;
-}
-
 
 void
 MixtureObj::sample(size_t outIdx, const Eigen::Ref<IndexVector> &indices,
@@ -192,7 +181,6 @@ MixtureObj::print(std::ostream &stream) const {
   for (size_t i=0; i<_variables.size(); i++) {
     stream << " " << _weights[i] << "*"; _variables[i]->print(stream);
   }
-  stream << " density="; _density->print(stream);
   stream << " #" << this << ">";
 }
 

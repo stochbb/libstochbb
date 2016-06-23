@@ -271,11 +271,9 @@ MinimumDensityObj::print(std::ostream &stream) const {
  * Implementation of MaximumObj
  * ********************************************************************************************* */
 MaximumObj::MaximumObj(const std::vector<Var> &variables, const std::string &name)
-  : DerivedVarObj(variables, name), _density(0)
+  : DerivedVarObj(variables, name)
 {
-  // Construct density
-  _density = new MaximumDensityObj(_variables);
-  _density->unref();
+  // pass...
 }
 
 MaximumObj::~MaximumObj() {
@@ -286,13 +284,6 @@ void
 MaximumObj::mark() {
   if (isMarked()) { return; }
   VarObj::mark();
-  if (_density) { _density->mark(); }
-}
-
-Density
-MaximumObj::density() {
-  _density->ref();
-  return _density;
 }
 
 void
@@ -313,7 +304,6 @@ MaximumObj::print(std::ostream &stream) const {
   for (size_t i=0; i<_variables.size(); i++) {
     stream << " "; _variables[i]->print(stream);
   }
-  stream << " density="; _density->print(stream);
   stream << " #" << this << ">";
 }
 
@@ -322,11 +312,9 @@ MaximumObj::print(std::ostream &stream) const {
  * Implementation of MinimumObj
  * ********************************************************************************************* */
 MinimumObj::MinimumObj(const std::vector<Var> &variables, const std::string &name)
-  : DerivedVarObj(variables, name), _density(0)
+  : DerivedVarObj(variables, name)
 {
-  // Construct density
-  _density = new MinimumDensityObj(_variables);
-  _density->unref();
+  // pass...
 }
 
 MinimumObj::~MinimumObj() {
@@ -337,14 +325,6 @@ void
 MinimumObj::mark() {
   if (isMarked()) { return; }
   VarObj::mark();
-  if (_density) { _density->mark(); }
-}
-
-Density
-MinimumObj::density() {
-  if (_density)
-    _density->ref();
-  return _density;
 }
 
 void
@@ -365,6 +345,5 @@ MinimumObj::print(std::ostream &stream) const {
   for (size_t i=0; i<_variables.size(); i++) {
     stream << " "; _variables[i]->print(stream);
   }
-  stream << " density="; _density->print(stream);
   stream << " #" << this << ">";
 }

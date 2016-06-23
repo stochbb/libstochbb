@@ -432,7 +432,7 @@ public:
   }
 
   /** Returns a reference to the density associated with this random variable. */
-  Density density() const;
+  Density density() const throw (Error);
 
   /** Returns @c true if this random variable depends on the given one. */
   bool dependsOn(const Var &other) const;
@@ -731,6 +731,9 @@ public:
   Compound(const Compound &other);
   /** Assignment operator. */
   Compound &operator =(const Compound &other);
+
+  /** Retruns the distribution of the compound variable. */
+  Distribution distribution() const;
 
 protected:
   /** The reference to the @c CompoundObj instance. */
