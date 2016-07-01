@@ -323,11 +323,6 @@ Var
 stochbb::maximum(const std::vector<Var> &variables) throw (Error) {
   std::vector<Var> args(variables);
   Var common = splitCommon(args);
-  if (! independent(args)) {
-    AssumptionError err;
-    err << "Cannot construct maximum of variables, variables are not independent.";
-    throw err;
-  }
   return Var(new MaximumObj(args)) + common;
 }
 
