@@ -37,17 +37,21 @@ public:
   }
 
   /** Returns @c true if this random variable depends on the specified one. */
-  inline bool dependsOn(const Var var) const {
-    return 0 != _dependencies.count(*var);
+  inline bool dependsOn(const Var &var) const {
+    return (this == *var) || (0 != _dependencies.count(*var));
   }
 
   /** Returns @c true if this random variable is mutually independent from the given on. */
   inline bool mutuallyIndep(const Var &var) const {
-    if (dependsOn(var)) { return false; }
+    // Check if this variable depends on var directly
+    if (dependsOn(var))
+      return false;
+    // Check if both variables (this & var) depend on a common variable
     std::set<VarObj *>::const_iterator item = var->dependencies().begin();
     for (; item != var->dependencies().end(); item++) {
       (*item)->ref();
-      if (dependsOn(*item)) { return false; }
+      if (dependsOn(*item))
+        return false;
     }
     return true;
   }

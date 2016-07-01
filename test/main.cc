@@ -5,7 +5,8 @@
 #include "convolutiontest.hh"
 #include "compoundtest.hh"
 #include "exactsamplertest.hh"
-#include "src/logger.hh"
+#include "independencetest.hh"
+//#include "src/logger.hh"
 
 using namespace stochbb;
 using namespace stochbb::UnitTest;
@@ -23,6 +24,7 @@ int main(int argc, char *argv[]) {
   runner.addSuite(ConvolutionTest::suite());
   runner.addSuite(CompoundTest::suite());
   runner.addSuite(ExactSamplerTest::suite());
+  runner.addSuite(IndependenceTest::suite());
 
   // Exec tests:
   runner();
