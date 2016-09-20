@@ -334,7 +334,8 @@ GammaDistributionObj::affine(double scale, double shift, std::vector<Density> &p
 
 void GammaDistributionObj::quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const {
   double k=params[0], theta=params[1], shift=params[2];
-  lower=shift; upper = stochbb::qgamma(p, k, theta) + shift;
+  lower=shift + stochbb::qgamma(p, k, theta);
+  upper=shift + stochbb::qgamma(1.-p, k, theta);
 }
 
 void
@@ -420,7 +421,8 @@ InvGammaDistributionObj::quantile(double &lower, double &upper, double p,
                                   const Eigen::Ref<const Eigen::VectorXd> params) const
 {
   double alpha=params[0], beta=params[1], shift=params[2];
-  lower=shift; upper = stochbb::qinvgamma(p, alpha, beta) + shift;
+  lower = stochbb::qinvgamma(p, alpha, beta) + shift;
+  upper = stochbb::qinvgamma(1.-p, alpha, beta) + shift;
 }
 
 void

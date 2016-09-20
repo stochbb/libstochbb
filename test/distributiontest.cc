@@ -73,12 +73,12 @@ DistributionTest::testGammaQuantiles() {
   double lower, upper;
 
   dist.quantile(lower, upper, 0.05, param);
-  UT_ASSERT_NEAR_EPS(lower, 0.05129329, 1e-8);
-  UT_ASSERT_NEAR_EPS(upper, 2.99573227, 1e-8);
+  UT_ASSERT_NEAR_EPS(lower, 0.05129329, 1e-6);
+  UT_ASSERT_NEAR_EPS(upper, 2.99573227, 1e-6);
 
   dist.quantile(lower, upper, 0.01, param);
-  UT_ASSERT_NEAR_EPS(lower, 0.01005034, 1e-8);
-  UT_ASSERT_NEAR_EPS(upper, 4.60517019, 1e-8);
+  UT_ASSERT_NEAR_EPS(lower, 0.01005034, 1e-6);
+  UT_ASSERT_NEAR_EPS(upper, 4.60517019, 1e-6);
 }
 
 void
@@ -88,12 +88,12 @@ DistributionTest::testInvGammaQuantiles() {
   double lower, upper;
 
   dist.quantile(lower, upper, 0.05, param);
-  UT_ASSERT_NEAR_EPS(lower,  0.3338082, 1e-7);
-  UT_ASSERT_NEAR_EPS(upper, 19.4957257, 1e-7);
+  UT_ASSERT_NEAR_EPS(lower,  0.3338082, 1e-6);
+  UT_ASSERT_NEAR_EPS(upper, 19.4957257, 1e-6);
 
   dist.quantile(lower, upper, 0.01, param);
-  UT_ASSERT_NEAR_EPS(lower,  0.2171472, 1e-7);
-  UT_ASSERT_NEAR_EPS(upper, 99.4991625, 1e-7);
+  UT_ASSERT_NEAR_EPS(lower,  0.2171472, 1e-6);
+  UT_ASSERT_NEAR_EPS(upper, 99.4991625, 1e-6);
 }
 
 TestSuite *

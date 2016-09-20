@@ -1,6 +1,8 @@
 #include "math.hh"
 #include <limits>
 #include <cstddef>
+#include "logger.hh"
+
 
 using namespace stochbb;
 
@@ -309,9 +311,10 @@ stochbb::qgamma(double p, double k, double theta) {
   // p(x)
   double p2 = stochbb::pgamma(x, k, theta);
   // do Newton
-  while (std::abs(p-p2)>1e-8) {
+  while (std::abs(p2-p)>1e-12) {
     // update x
-    x += (p-p2)/stochbb::dgamma(x, k, theta);
+    x -= (p2-p)/stochbb::dgamma(x, k, theta);
+    if (x<0) x = 0;
     // get new p(x)
     p2 = stochbb::pgamma(x, k, theta);
   }
@@ -339,9 +342,10 @@ stochbb::qinvgamma(double p, double alpha, double beta) {
   double x = beta/(alpha+1);
   // get p(x)
   double p2 = stochbb::pinvgamma(x, alpha, beta);
-  while (std::abs(p-p2)>1e-8) {
+  while (std::abs(p-p2) > 1e-12) {
     // update x
     x += (p-p2)/stochbb::dinvgamma(x, alpha, beta);
+    if (x<0) x=0;
     // update p(x)
     p2 = stochbb::pinvgamma(x, alpha, beta);
   }

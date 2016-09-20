@@ -2,4 +2,4 @@ SET(STOCHBB_TEST_SOURCES main.cc distributiontest.cc convolutiontest.cc compound
     exactsamplertest.cc memorytest.cc independencetest.cc)
 
 add_executable(stochbb_test ${STOCHBB_TEST_SOURCES})
-target_link_libraries(stochbb_test ${LIBS} libsbb)
+target_link_libraries(stochbb_test libsbb ${LIBS})
