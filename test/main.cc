@@ -2,11 +2,12 @@
 #include <iostream>
 
 #include "memorytest.hh"
+#include "distributiontest.hh"
 #include "convolutiontest.hh"
 #include "compoundtest.hh"
 #include "exactsamplertest.hh"
 #include "independencetest.hh"
-//#include "src/logger.hh"
+#include "src/logger.hh"
 
 using namespace stochbb;
 using namespace stochbb::UnitTest;
@@ -21,6 +22,7 @@ int main(int argc, char *argv[]) {
 
   // Add suites
   runner.addSuite(MemoryTest::suite());
+  runner.addSuite(DistributionTest::suite());
   runner.addSuite(ConvolutionTest::suite());
   runner.addSuite(CompoundTest::suite());
   runner.addSuite(ExactSamplerTest::suite());

@@ -155,7 +155,8 @@ CompoundDensityObj::eval(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> o
       N *= Nstep;
       double a, b;
       _parameters[i]->rangeEst(0.00001, a, b);
-      double x = a, dx = (b-a)/Nstep; df *= dx;
+      double dx = (b-a)/(Nstep+1), x = a+dx/2; df *= dx;
+      logDebug() << "Prepare integration over parameter range [" << a << ", " << b << "].";
       for (size_t j=0; j<Nstep; j++, x+=dx)
         params(j,i) = x;
       // get parameter PDF

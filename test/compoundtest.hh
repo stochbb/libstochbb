@@ -12,6 +12,7 @@ public:
 
   void testNormalCompound();
   void testNormalCompoundReduction();
+  void testNormalGammaCompound();
   void testGammaCompound();
 
 public:

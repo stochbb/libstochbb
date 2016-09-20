@@ -117,12 +117,12 @@ _gammaq(double s, double z) {
 
 double
 stochbb::gamma_li(double s, double z) {
-  return z <= 1. || z < s ? _gammap(s, z) : 1. - _gammaq(s, z);
+  return (z <= 1. || z < s) ? _gammap(s, z) : 1. - _gammaq(s, z);
 }
 
 double
 stochbb::gamma_ui(double s, double z) {
-  return z <= 1. || z < s? 1. - _gammap(s, z) : _gammaq(s, z);
+  return (z <= 1. || z < s) ? 1. - _gammap(s, z) : _gammaq(s, z);
 }
 
 /* Regularized incomplete beta function. The method is taken from
@@ -284,7 +284,7 @@ stochbb::qnorm(double p) {
 
 double
 stochbb::dgamma(double x, double k, double theta) {
-  if (x<=0) {
+  if (x<0) {
     return 0;
   }
   if ((x==0) && (k==1)) {
@@ -329,7 +329,7 @@ stochbb::dinvgamma(double x, double alpha, double beta) {
 double
 stochbb::pinvgamma(double x, double alpha, double beta) {
   if (x<=0) { return 0; }
-  return stochbb::gamma_ui(alpha, beta/x);
+  return std::exp( std::log(stochbb::gamma_ui(alpha, beta/x)) - std::lgamma(alpha));
 }
 
 double

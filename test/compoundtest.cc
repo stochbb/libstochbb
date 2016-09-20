@@ -46,6 +46,28 @@ CompoundTest::testNormalCompoundReduction() {
 }
 
 void
+CompoundTest::testNormalGammaCompound() {
+  size_t N = 100;
+  Var mu  = normal(0, 100);
+  Var sig = invgamma(1,1);
+  Var X = normal(mu, sig);
+  Var Y = normal(0, 100);
+
+  Eigen::VectorXd dX(N), dY(N);
+  X.density().eval(-600, 600, dX);
+  Y.density().eval(-600, 600, dY);
+  for (size_t i=0; i<N; i++) {
+    UT_ASSERT_NEAR_EPS(dX(i), dY(i), 1e-5);
+  }
+
+  X.density().evalCDF(-600, 600, dX);
+  Y.density().evalCDF(-600, 600, dY);
+  for (size_t i=0; i<N; i++) {
+    UT_ASSERT_NEAR_EPS(dX(i), dY(i), 1e-5);
+  }
+}
+
+void
 CompoundTest::testGammaCompound() {
   Var k = uniform(0,4);
   Var X = gamma(5*k+5, 10);
@@ -60,6 +82,7 @@ CompoundTest::suite() {
   TestSuite *suite = new TestSuite("Compound");
   suite->addTest(new TestCaller<CompoundTest>("normal compound", &CompoundTest::testNormalCompound));
   suite->addTest(new TestCaller<CompoundTest>("normal compound reduction", &CompoundTest::testNormalCompoundReduction));
+  suite->addTest(new TestCaller<CompoundTest>("normal gamma compound", &CompoundTest::testNormalGammaCompound));
   suite->addTest(new TestCaller<CompoundTest>("gamma compound", &CompoundTest::testGammaCompound));
   return suite;
 }

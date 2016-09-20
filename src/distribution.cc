@@ -158,7 +158,7 @@ UniformDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd
 void
 UniformDistributionObj::quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const {
   double a=params[0], b=params[1];
-  double d = (b-a)*p/2;
+  double d = (b-a)*p;
   lower = a+d; upper = b-d;
 }
 
@@ -227,7 +227,10 @@ void NormalDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::Vect
   double mu=params[0], sigma=params[1];
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
   for (int i=0; i<out.size(); i++, t+=dt) {
-    out[i] = stochbb::dnorm((t-mu)/sigma)/sigma;
+    if (sigma>0)
+      out[i] = stochbb::dnorm((t-mu)/sigma)/sigma;
+    else
+      out[i] = 0;
   }
 }
 
@@ -379,7 +382,10 @@ void InvGammaDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::Ve
   Tmin -= shift; Tmax -= shift;
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
   for (int i=0; i<out.size(); i++, t+=dt) {
-    out[i] = stochbb::dinvgamma(t, alpha, beta);
+    if (t>0)
+      out[i] = stochbb::dinvgamma(t, alpha, beta);
+    else
+      out[i] = 0;
   }
 }
 
@@ -388,7 +394,10 @@ void InvGammaDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::Ve
   Tmin -= shift; Tmax -= shift;
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
   for (int i=0; i<out.size(); i++, t+=dt) {
-    out[i] = stochbb::pinvgamma(t, alpha, beta);
+    if (t>0)
+      out[i] = stochbb::pinvgamma(t, alpha, beta);
+    else
+      out[i] = 0;
   }
 }
 
