@@ -511,7 +511,8 @@ WeibullDistributionObj::quantile(double &lower, double &upper, double p,
                                  const Eigen::Ref<const Eigen::VectorXd> params) const
 {
   double k=params[0], lambda=params[1], shift=params[2];
-  lower = shift; upper = stochbb::qweibull(p, k, lambda) + shift;
+  lower = stochbb::qweibull(p, k, lambda) + shift;
+  upper = stochbb::qweibull(1-p, k, lambda) + shift;
 }
 
 void
@@ -586,12 +587,21 @@ StudtDistributionObj::quantile(double &lower, double &upper, double p,
                                const Eigen::Ref<const Eigen::VectorXd> params) const
 {
   double nu=params[0], sigma=params[1], mu=params[2];
-  // get inverse reg. incomplete beta function
-  upper = invbetai(nu/2, 0.5, 1-p/2);
-  // map
-  upper = std::sqrt(nu/upper - nu);
-  // symm.
-  lower = -upper;
+  if (0.5 <= p) {
+    // get inverse reg. incomplete beta function
+    upper = invbetai(nu/2, 0.5, 2*(1-p));
+    // map
+    upper = std::sqrt(nu/upper - nu);
+    // symm.
+    lower = -upper;
+  } else {
+    // get inverse reg. incomplete beta function
+    upper = invbetai(nu/2, 0.5, 2*p);
+    // map
+    upper = std::sqrt(nu/upper - nu);
+    // symm.
+    lower = -upper;
+  }
   // scale/shift
   upper = sigma*upper+mu;
   lower = sigma*lower+mu;

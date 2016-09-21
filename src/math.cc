@@ -167,16 +167,16 @@ stochbb::betai(double a, double b, double x) {
 double
 stochbb::invbetai(double a, double b, double p) {
   // Perform binary search for x
-  double lower=0, upper=1, x=0;
-  while ((upper-lower)>1e-9) {
-    x = (upper-lower)/2;
-    if (betai(a,b,x) > p) {
+  double lower=0, upper=1, x=(upper-lower)/2;
+  while ((upper-lower) > 1e-12) {
+    x = (upper+lower)/2;
+    if (betai(a,b, x) > p) {
       upper=x;
     } else {
       lower=x;
     }
   }
-  return 0;
+  return x;
 }
 
 double
@@ -365,10 +365,10 @@ stochbb::dweibull(double x, double k, double lambda) {
 double
 stochbb::pweibull(double x, double k, double lambda) {
   if (x<0) { return 0; }
-  return 1-std::exp(std::pow(x/lambda,k));
+  return 1-std::exp(-std::pow(x/lambda,k));
 }
 
 double
 stochbb::qweibull(double p, double k, double lambda) {
-  return lambda*std::pow(std::log(1-p), 1./k);
+  return lambda*std::pow(-std::log(1-p), 1./k);
 }

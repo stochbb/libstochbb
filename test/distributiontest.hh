@@ -11,11 +11,21 @@ public:
   DistributionTest();
 
   void testUniformQuantiles();
+  void testNormalPDF();
+  void testNormalCDF();
   void testNormalQuantiles();
   void testGammaPDF();
   void testGammaCDF();
   void testGammaQuantiles();
+  void testInvGammaPDF();
+  void testInvGammaCDF();
   void testInvGammaQuantiles();
+  void testWeibullPDF();
+  void testWeibullCDF();
+  void testWeibullQuantiles();
+  void testStudtPDF();
+  void testStudtCDF();
+  void testStudtQuantiles();
 
 public:
   static UnitTest::TestSuite *suite();

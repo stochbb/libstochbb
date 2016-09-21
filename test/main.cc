@@ -15,7 +15,7 @@ using namespace stochbb::UnitTest;
 
 int main(int argc, char *argv[]) {
 
-  Logger::addHandler(IOLogHandler());
+  //Logger::addHandler(IOLogHandler());
 
   // Construct test-runner
   TestRunner runner(std::cout);

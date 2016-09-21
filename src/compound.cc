@@ -134,7 +134,7 @@ CompoundDensityObj::parameter(size_t i) const {
 
 void
 CompoundDensityObj::eval(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out) const {
-  size_t Nstep = 300;
+  size_t Nstep = 200;
   double df = 1;
 
   // Get parameter values and PDFs of parameters
@@ -154,17 +154,16 @@ CompoundDensityObj::eval(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> o
       Ns.push_back(Nstep);
       N *= Nstep;
       double a, b;
-      _parameters[i]->rangeEst(0.001, a, b);
+      _parameters[i]->rangeEst(0.0025, a, b);
       double dx = (b-a)/(Nstep+1), x = a+dx/2; df *= dx;
       logDebug() << "Prepare integration over parameter range [" << a << ", " << b << "].";
       for (size_t j=0; j<Nstep; j++, x+=dx)
         params(j,i) = x;
       // get parameter PDF
-      _parameters[i]->eval(a, b, PDFs.col(i));
+      _parameters[i]->eval(a+dx/2, b+dx/2, PDFs.col(i));
     }
   }
 
-  out.setZero();
   // the current parameter vector
   Eigen::VectorXd param(_parameters.size());
   // value indices for the i-th summand

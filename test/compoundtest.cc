@@ -47,26 +47,26 @@ CompoundTest::testNormalCompoundReduction() {
 
 void
 CompoundTest::testNormalGammaCompound() {
-  size_t N = 100;
+  size_t N = 200;
+  Var mu  = normal(0, 100);
+  Var sig = gamma(1,1);
+  Var X = normal(mu, sig);
+  double Xmax = 1000, dx = 2*Xmax/N;
+  Eigen::VectorXd dX(N);
+  X.density().eval(-Xmax, Xmax, dX);
+  UT_ASSERT_NEAR_EPS((dX*dx).sum(), 1.0, 1e-1);
+}
+
+void
+CompoundTest::testNormalInvGammaCompound() {
+  size_t N = 200;
   Var mu  = normal(0, 100);
   Var sig = invgamma(1,1);
   Var X = normal(mu, sig);
-  Var Y = normal(0, 102);
-
-  Eigen::VectorXd dX(N), dY(N);
-  X.density().eval(-600, 600, dX);
-  Y.density().eval(-600, 600, dY);
-  std::cerr << "Got " << dX.transpose() << std::endl;
-  std::cerr << "Exp " << dY.transpose() << std::endl;
-  for (size_t i=0; i<N; i++) {
-    UT_ASSERT_NEAR_EPS(dX(i), dY(i), 1e-4);
-  }
-
-  X.density().evalCDF(-600, 600, dX);
-  Y.density().evalCDF(-600, 600, dY);
-  for (size_t i=0; i<N; i++) {
-    UT_ASSERT_NEAR_EPS(dX(i), dY(i), 1e-4);
-  }
+  double Xmax = 1000, dx = 2*Xmax/N;
+  Eigen::VectorXd dX(N);
+  X.density().eval(-Xmax, Xmax, dX);
+  UT_ASSERT_NEAR_EPS((dX*dx).sum(), 1.0, 1e-1);
 }
 
 void
@@ -85,6 +85,7 @@ CompoundTest::suite() {
   suite->addTest(new TestCaller<CompoundTest>("normal compound", &CompoundTest::testNormalCompound));
   suite->addTest(new TestCaller<CompoundTest>("normal compound reduction", &CompoundTest::testNormalCompoundReduction));
   suite->addTest(new TestCaller<CompoundTest>("normal gamma compound", &CompoundTest::testNormalGammaCompound));
+  suite->addTest(new TestCaller<CompoundTest>("normal inv-gamma compound", &CompoundTest::testNormalInvGammaCompound));
   suite->addTest(new TestCaller<CompoundTest>("gamma compound", &CompoundTest::testGammaCompound));
   return suite;
 }
