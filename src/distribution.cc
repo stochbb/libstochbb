@@ -63,8 +63,9 @@ DeltaDistributionObj::nParams() const {
 
 void
 DeltaDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-                          const Eigen::Ref<const Eigen::VectorXd> params) const
+                          const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
 {
+  assume(1 == params.size());
   out.setZero();
   if ((params[0]<Tmin) || (params[0]>=Tmax)) { return; }
   double dt = (Tmax-Tmin)/out.size();
@@ -74,8 +75,9 @@ DeltaDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> 
 
 void
 DeltaDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-                          const Eigen::Ref<const Eigen::VectorXd> params) const
+                          const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
 {
+  assume(1 == params.size());
   out.setZero();
   if ((params[0]<Tmin) || (params[0]>Tmax)) { return; }
   double dt = (Tmax-Tmin)/out.size();
@@ -85,23 +87,33 @@ DeltaDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> 
 
 void
 DeltaDistributionObj::quantile(double &lower, double &upper, double p,
-                               const Eigen::Ref<const Eigen::VectorXd> params) const {
+                               const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(1 == params.size());
   lower = params[0]-1e-6; upper = params[0]+1e-6;
 }
 
 void
-DeltaDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const {
+DeltaDistributionObj::affine(
+    double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const  throw (AssumptionError)
+{
+  assume(1 == params.size());
   params[0] = scale*params[0] + shift;
 }
 
 void
-DeltaDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const {
+DeltaDistributionObj::affine(
+    double scale, double shift, std::vector<Density> &params) const throw (AssumptionError)
+{
+  assume(1 == params.size());
   params[0] = params[0].affine(scale, shift);
 }
 
 void
-DeltaDistributionObj::sample(Eigen::Ref<Eigen::VectorXd> out,
-                             const Eigen::Ref<const Eigen::VectorXd> params) const {
+DeltaDistributionObj::sample(
+    Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(1 == params.size());
   out.setConstant(params[0]);
 }
 
@@ -136,7 +148,12 @@ UniformDistributionObj::nParams() const {
 }
 
 void
-UniformDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+UniformDistributionObj::pdf(
+    double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
+    const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(2 == params.size());
+
   double a=params[0], b=params[1];
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
   for (int i=0; i<out.size(); i++, t+=dt) {
@@ -145,7 +162,12 @@ UniformDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd
 }
 
 void
-UniformDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+UniformDistributionObj::cdf(
+    double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
+    const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(2 == params.size());
+
   double a=params[0], b=params[1];
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
   for (int i=0; i<out.size(); i++, t+=dt) {
@@ -156,14 +178,21 @@ UniformDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd
 }
 
 void
-UniformDistributionObj::quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const {
+UniformDistributionObj::quantile(
+    double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(2 == params.size());
+
   double a=params[0], b=params[1];
   double d = (b-a)*p;
   lower = a+d; upper = b-d;
 }
 
 void
-UniformDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const {
+UniformDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(2 == params.size());
+
   double a = params[0], b = params[1];
   a = scale*a + shift;
   b = scale*b + shift;
@@ -172,7 +201,10 @@ UniformDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::Vec
 }
 
 void
-UniformDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const {
+UniformDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError)
+{
+  assume(2 == params.size());
+
   if (scale>0) {
     params[0] = params[0].affine(scale, shift);
     params[1] = params[1].affine(scale, shift);
@@ -184,7 +216,11 @@ UniformDistributionObj::affine(double scale, double shift, std::vector<Density> 
 }
 
 void
-UniformDistributionObj::sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+UniformDistributionObj::sample(
+    Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(2 == params.size());
+
   double a=params[0], b=params[1];
   RNG &rng = RNG::get();
   std::uniform_real_distribution<double> sampler(a, b);
@@ -223,7 +259,12 @@ NormalDistributionObj::nParams() const {
   return 2;
 }
 
-void NormalDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+void NormalDistributionObj::pdf(
+    double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
+    const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(2 == params.size());
+
   double mu=params[0], sigma=params[1];
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
   for (int i=0; i<out.size(); i++, t+=dt) {
@@ -234,7 +275,12 @@ void NormalDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::Vect
   }
 }
 
-void NormalDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+void NormalDistributionObj::cdf(
+    double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
+    const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(2 == params.size());
+
   double mu=params[0], sigma=params[1];
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
   for (int i=0; i<out.size(); i++, t+=dt) {
@@ -243,25 +289,38 @@ void NormalDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::Vect
 }
 
 void
-NormalDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const {
+NormalDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(2 == params.size());
+
   double mu = params[0], sigma = params[1];
   params[0] = scale*mu + shift;
   params[1] = scale*sigma;
 }
 
 void
-NormalDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const {
+NormalDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError) {
+  assume(2 == params.size());
+
   Density mu = params[0], sigma = params[1];
   params[0] = mu.affine(scale, shift);
   params[1] = sigma.affine(scale,0);
 }
 
-void NormalDistributionObj::quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const {
+void NormalDistributionObj::quantile(
+    double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(2 == params.size());
+
   double mu=params[0], sigma=params[1];
   lower=mu+stochbb::qnorm(p)*sigma; upper=mu+stochbb::qnorm(1-p)*sigma;
 }
 
-void NormalDistributionObj::sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+void NormalDistributionObj::sample(
+    Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(2 == params.size());
+
   double mu=params[0], sigma=params[1];
   RNG &rng = RNG::get();
   std::normal_distribution<double> sampler(mu, sigma);
@@ -300,7 +359,12 @@ GammaDistributionObj::nParams() const {
   return 3;
 }
 
-void GammaDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+void GammaDistributionObj::pdf(
+    double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
+    const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(3 == params.size());
+
   double k=params[0], theta=params[1], shift=params[2];
   Tmin -= shift; Tmax -= shift;
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
@@ -309,7 +373,12 @@ void GammaDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::Vecto
   }
 }
 
-void GammaDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+void GammaDistributionObj::cdf(
+    double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
+    const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(3 == params.size());
+
   double k=params[0], theta=params[1], shift=params[2];
   Tmin -= shift; Tmax -= shift;
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
@@ -319,27 +388,40 @@ void GammaDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::Vecto
 }
 
 void
-GammaDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const {
+GammaDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(3 == params.size());
+
   double theta = params[1], s = params[2];
   params[1] = scale*theta;
   params[2] = scale*s+shift;
 }
 
 void
-GammaDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const {
+GammaDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError) {
+  assume(3 == params.size());
+
   Density theta = params[1], s = params[2];
   params[1] = theta.affine(scale, 0);
   params[2] = s.affine(scale,shift);
 }
 
-void GammaDistributionObj::quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const {
+void GammaDistributionObj::quantile(
+    double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(3 == params.size());
+
   double k=params[0], theta=params[1], shift=params[2];
   lower=shift + stochbb::qgamma(p, k, theta);
   upper=shift + stochbb::qgamma(1.-p, k, theta);
 }
 
 void
-GammaDistributionObj::sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+GammaDistributionObj::sample(
+    Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(3 == params.size());
+
   double k=params[0], theta=params[1], shift=params[2];
   RNG &rng = RNG::get();
   std::gamma_distribution<double> sampler(k, theta);
@@ -378,7 +460,12 @@ InvGammaDistributionObj::nParams() const {
   return 3;
 }
 
-void InvGammaDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+void InvGammaDistributionObj::pdf(
+    double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
+    const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(3 == params.size());
+
   double alpha=params[0], beta=params[1], shift=params[2];
   Tmin -= shift; Tmax -= shift;
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
@@ -390,7 +477,12 @@ void InvGammaDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::Ve
   }
 }
 
-void InvGammaDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+void InvGammaDistributionObj::cdf(
+    double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
+    const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(3 == params.size());
+
   double alpha=params[0], beta=params[1], shift=params[2];
   Tmin -= shift; Tmax -= shift;
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
@@ -403,14 +495,19 @@ void InvGammaDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::Ve
 }
 
 void
-InvGammaDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const {
+InvGammaDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(3 == params.size());
+
   double beta = params[1], s = params[2];
   params[1] = scale*beta;
   params[2] = scale*s+shift;
 }
 
 void
-InvGammaDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const {
+InvGammaDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError) {
+  assume(3 == params.size());
+
   Density beta = params[1], s = params[2];
   params[1] = beta.affine(scale, 0);
   params[2] = s.affine(scale,shift);
@@ -418,8 +515,10 @@ InvGammaDistributionObj::affine(double scale, double shift, std::vector<Density>
 
 void
 InvGammaDistributionObj::quantile(double &lower, double &upper, double p,
-                                  const Eigen::Ref<const Eigen::VectorXd> params) const
+                                  const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
 {
+  assume(3 == params.size());
+
   double alpha=params[0], beta=params[1], shift=params[2];
   lower = stochbb::qinvgamma(p, alpha, beta) + shift;
   upper = stochbb::qinvgamma(1.-p, alpha, beta) + shift;
@@ -427,8 +526,10 @@ InvGammaDistributionObj::quantile(double &lower, double &upper, double p,
 
 void
 InvGammaDistributionObj::sample(Eigen::Ref<Eigen::VectorXd> out,
-                                const Eigen::Ref<const Eigen::VectorXd> params) const
+                                const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
 {
+  assume(3 == params.size());
+
   double alpha=params[0], beta=params[1], shift=params[2];
   RNG &rng=RNG::get();
   std::inverse_gamma_distribution<double> sampler(alpha, 1./beta);
@@ -469,8 +570,10 @@ WeibullDistributionObj::nParams() const {
 
 void
 WeibullDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-                            const Eigen::Ref<const Eigen::VectorXd> params) const
+                            const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
 {
+  assume(3 == params.size());
+
   double k=params[0], lambda=params[1], shift=params[2];
   // Apply affine transform on arguments
   Tmin -= shift; Tmax -= shift;
@@ -482,8 +585,10 @@ WeibullDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd
 
 void
 WeibullDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-                            const Eigen::Ref<const Eigen::VectorXd> params) const
+                            const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
 {
+  assume(3 == params.size());
+
   double k=params[0], lambda=params[1], shift=params[2];
   Tmin -= shift; Tmax -= shift;
   double t = Tmin, dt = (Tmax-Tmin)/out.size();
@@ -493,14 +598,18 @@ WeibullDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd
 }
 
 void
-WeibullDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const {
+WeibullDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError) {
+  assume(3 == params.size());
+
   double lambda = params[1], s = params[2];
   params[1] = scale*lambda;
   params[2] = scale*s+shift;
 }
 
 void
-WeibullDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const {
+WeibullDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError) {
+  assume(3 == params.size());
+
   Density lambda = params[1], s = params[2];
   params[1] = lambda.affine(scale, 0);
   params[2] = s.affine(scale,shift);
@@ -508,15 +617,19 @@ WeibullDistributionObj::affine(double scale, double shift, std::vector<Density> 
 
 void
 WeibullDistributionObj::quantile(double &lower, double &upper, double p,
-                                 const Eigen::Ref<const Eigen::VectorXd> params) const
+                                 const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
 {
+  assume(3 == params.size());
+
   double k=params[0], lambda=params[1], shift=params[2];
   lower = stochbb::qweibull(p, k, lambda) + shift;
   upper = stochbb::qweibull(1-p, k, lambda) + shift;
 }
 
 void
-WeibullDistributionObj::sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const {
+WeibullDistributionObj::sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError) {
+  assume(3 == params.size());
+
   double k=params[0], lambda=params[1], shift=params[2];
   RNG &rng = RNG::get();
   std::weibull_distribution<double> sampler(k, lambda);
@@ -551,8 +664,10 @@ StudtDistributionObj::nParams() const {
 
 void
 StudtDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-                          const Eigen::Ref<const Eigen::VectorXd> params) const
+                          const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
 {
+  assume(3 == params.size());
+
   double nu=params[0], sigma=params[1], mu=params[2];
   Tmin = (Tmin - mu)/sigma;
   Tmax = (Tmax - mu)/sigma;
@@ -566,8 +681,10 @@ StudtDistributionObj::pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> 
 
 void
 StudtDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-                          const Eigen::Ref<const Eigen::VectorXd> params) const
+                          const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
 {
+  assume(3 == params.size());
+
   double nu=params[0], sigma=params[1], mu=params[2];
   Tmin = (Tmin - mu)/sigma;
   Tmax = (Tmax - mu)/sigma;
@@ -583,9 +700,12 @@ StudtDistributionObj::cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> 
 }
 
 void
-StudtDistributionObj::quantile(double &lower, double &upper, double p,
-                               const Eigen::Ref<const Eigen::VectorXd> params) const
+StudtDistributionObj::quantile(
+    double &lower, double &upper, double p,
+    const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
 {
+  assume(3 == params.size());
+
   double nu=params[0], sigma=params[1], mu=params[2];
   if (0.5 <= p) {
     // get inverse reg. incomplete beta function
@@ -608,22 +728,33 @@ StudtDistributionObj::quantile(double &lower, double &upper, double p,
 }
 
 void
-StudtDistributionObj::affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const {
+StudtDistributionObj::affine(
+    double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError)
+{
+  assume(3 == params.size());
+
   params[1] *= scale;
   params[2] = scale*params[2] + shift;
 }
 
 void
-StudtDistributionObj::affine(double scale, double shift, std::vector<Density> &params) const {
+StudtDistributionObj::affine(
+    double scale, double shift, std::vector<Density> &params) const throw (AssumptionError)
+{
+  assume(3 == params.size());
+
   Density sigma = params[1], mu = params[2];
   params[1] = sigma.affine(scale, 0);
   params[2] = mu.affine(scale,shift);
 }
 
 void
-StudtDistributionObj::sample(Eigen::Ref<Eigen::VectorXd> out,
-                             const Eigen::Ref<const Eigen::VectorXd> params) const
+StudtDistributionObj::sample(
+    Eigen::Ref<Eigen::VectorXd> out,
+    const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError)
 {
+  assume(3 == params.size());
+
   double df=params[0], sigma=params[1], mu = params[2];
   RNG &rng = RNG::get();
   std::student_t_distribution<double> sampler(df);

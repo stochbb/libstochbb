@@ -76,6 +76,7 @@ public:
 
   /** Serializes a container. */
   LogMessageStream &operator<< (const Container &obj);
+  /** Serializes a value. */
   LogMessageStream &operator<< (const double &value);
 
 protected:

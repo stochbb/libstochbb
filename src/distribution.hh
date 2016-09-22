@@ -2,6 +2,7 @@
 #define __SSB_DISTRIBUTIONOBJ_HH__
 
 #include "density.hh"
+#include "exception.hh"
 #include <Eigen/Eigen>
 
 
@@ -33,22 +34,23 @@ public:
   /** Evaluates the probability density function with the specified parameters on a regular grid
    * in \f$[T_{min}, T_{max})\f$ and stores the result into @c out. */
   virtual void pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-                   const Eigen::Ref<const Eigen::VectorXd> params) const = 0;
+                   const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError) = 0;
   /** Evaluates the probability function with the specified parameters on a regular grid
    * in \f$[T_{min}, T_{max})\f$ and stores the result into @c out. */
   virtual void cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-                   const Eigen::Ref<const Eigen::VectorXd> params) const = 0;
+                   const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError) = 0;
   /** Returns the quantiles (@c lower, @c upper) for the given probability @c p with the specified
    * parameters. */
-  virtual void quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const = 0;
+  virtual void quantile(double &lower, double &upper, double p,
+                        const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError) = 0;
   /** Changes the given set of parameters such that the distribution is an affine transformed. */
-  virtual void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const = 0;
+  virtual void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError) = 0;
   /** Changes the given set of parameter densities such that the distribution is an affine
    * transformed. */
-  virtual void affine(double scale, double shift, std::vector<Density> &params) const = 0;
+  virtual void affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError) = 0;
   /** Draws some samples from the distribution with the specified parameters. */
   virtual void sample(Eigen::Ref<Eigen::VectorXd> out,
-                      const Eigen::Ref<const Eigen::VectorXd> params) const = 0;
+                      const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError) = 0;
   /** Distribution type order. */
   virtual int compare(const DistributionObj &other) const;
 };
@@ -67,12 +69,15 @@ public:
 
   size_t nParams() const;
   void pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, std::vector<Density> &params) const;
-  void sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void quantile(double &lower, double &upper, double p,
+                const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError);
+  void sample(Eigen::Ref<Eigen::VectorXd> out,
+              const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void print(std::ostream &stream) const;
 };
 
@@ -90,13 +95,16 @@ public:
 
   size_t nParams() const;
   void pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, std::vector<Density> &params) const;
-  void sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void quantile(double &lower, double &upper, double p,
+                const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift,
+              Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError);
+  void sample(Eigen::Ref<Eigen::VectorXd> out,
+              const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void print(std::ostream &stream) const;
 };
 
@@ -114,13 +122,16 @@ public:
 
   size_t nParams() const;
   void pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, std::vector<Density> &params) const;
-  void sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void quantile(double &lower, double &upper, double p,
+                const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift,
+              Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError);
+  void sample(Eigen::Ref<Eigen::VectorXd> out,
+              const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void print(std::ostream &stream) const;
 };
 
@@ -138,13 +149,16 @@ public:
 
   size_t nParams() const;
   void pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, std::vector<Density> &params) const;
-  void sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void quantile(double &lower, double &upper, double p,
+                const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift,
+              Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError);
+  void sample(Eigen::Ref<Eigen::VectorXd> out,
+              const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void print(std::ostream &stream) const;
 };
 
@@ -162,13 +176,15 @@ public:
 
   size_t nParams() const;
   void pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, std::vector<Density> &params) const;
-  void sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void quantile(double &lower, double &upper, double p,
+                const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError);
+  void sample(Eigen::Ref<Eigen::VectorXd> out,
+              const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void print(std::ostream &stream) const;
 };
 
@@ -186,13 +202,15 @@ public:
 
   size_t nParams() const;
   void pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, std::vector<Density> &params) const;
-  void sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void quantile(double &lower, double &upper, double p,
+                const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError);
+  void sample(Eigen::Ref<Eigen::VectorXd> out,
+              const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void print(std::ostream &stream) const;
 };
 
@@ -208,13 +226,15 @@ public:
 
   size_t nParams() const;
   void pdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void cdf(double Tmin, double Tmax, Eigen::Ref<Eigen::VectorXd> out,
-           const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void quantile(double &lower, double &upper, double p, const Eigen::Ref<const Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const;
-  void affine(double scale, double shift, std::vector<Density> &params) const;
-  void sample(Eigen::Ref<Eigen::VectorXd> out, const Eigen::Ref<const Eigen::VectorXd> params) const;
+           const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void quantile(double &lower, double &upper, double p,
+                const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift, Eigen::Ref<Eigen::VectorXd> params) const throw (AssumptionError);
+  void affine(double scale, double shift, std::vector<Density> &params) const throw (AssumptionError);
+  void sample(Eigen::Ref<Eigen::VectorXd> out,
+              const Eigen::Ref<const Eigen::VectorXd> params) const throw (AssumptionError);
   void print(std::ostream &stream) const;
 };
 

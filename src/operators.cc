@@ -570,7 +570,10 @@ operator<<(std::ostream &stream, const stochbb::Container &x) {
  * Implementation of kolmogorov
  * ********************************************************************************************* */
 double
-stochbb::kolmogorov(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<const Eigen::VectorXd> &values) {
+stochbb::kolmogorov(
+    const Var &X, double tmin, double tmax, size_t N,
+    const Eigen::Ref<const Eigen::VectorXd> &values) throw (Error)
+{
   // Copy data
   Eigen::VectorXd ordered_vals(values);
   // sort values
@@ -612,7 +615,10 @@ stochbb::kolmogorov(const Var &X, double tmin, double tmax, size_t N, const Eige
  * Implementation of logLikelihood
  * ********************************************************************************************* */
 double
-stochbb::logLikelihood(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<const Eigen::VectorXd> &values) {
+stochbb::logLikelihood(
+    const Var &X, double tmin, double tmax, size_t N,
+    const Eigen::Ref<const Eigen::VectorXd> &values) throw (Error)
+{
   // check min & max
   if ((tmin > values.minCoeff()) || (tmax<values.maxCoeff())) {
     logWarning() << "Some samples lay outside the interval specified for the evaluation of the "
@@ -635,4 +641,23 @@ stochbb::logLikelihood(const Var &X, double tmin, double tmax, size_t N, const E
   }
   // done.
   return ll;
+}
+
+/* ********************************************************************************************* *
+ * Implementation of moment
+ * ********************************************************************************************* */
+double
+stochbb::moment(const Var &X, double n, double Xmin, double Xmax, size_t N) throw (Error) {
+  Eigen::VectorXd pdf(N);
+  double dx = (Xmax-Xmin)/(N+1);
+  double x = Xmin + dx/2;
+
+  X.density().eval(Xmin+dx/2, Xmax+dx/2, pdf);
+
+  double moment = 0;
+  for (size_t i=0; i<N; i++, x+=dx) {
+    moment += std::pow(x, n) * pdf(i);
+  }
+
+  return moment;
 }

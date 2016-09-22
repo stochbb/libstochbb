@@ -69,6 +69,7 @@ protected:
 protected:
   /** The set of all objects. */
   std::unordered_set<Object *> _objects;
+  /** Mutex to controll thread access to the GC. */
   std::mutex _lock;
   /** The singleton instance. */
   static GC *_instance;

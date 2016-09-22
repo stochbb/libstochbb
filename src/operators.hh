@@ -296,11 +296,16 @@ Density directConvolve(const Density &a, const Density &b, const Density &c);
 
 /** Evaluates the Kolmogorov-Smirnov statistic (KS) of the given data using a N-point approximation
  * of the CDF function on the intervall \f$[tmin, tmax)\f$. */
-double kolmogorov(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<const Eigen::VectorXd> &values);
+double kolmogorov(const Var &X, double tmin, double tmax, size_t N,
+                  const Eigen::Ref<const Eigen::VectorXd> &values) throw (Error);
 
 /** Evaluates the log Likelihood of the given data using a N-point piece-wise
  * linear approximation of the PDF function on the intervall \f$[tmin, tmax)\f$. */
-double logLikelihood(const Var &X, double tmin, double tmax, size_t N, const Eigen::Ref<const Eigen::VectorXd> &values);
+double logLikelihood(const Var &X, double tmin, double tmax, size_t N,
+                     const Eigen::Ref<const Eigen::VectorXd> &values) throw (Error);
+
+/** Evaluates the n-th non-central moment of the given random variable. */
+double moment(const Var &X, double n, double Xmin, double Xmax, size_t N) throw (Error);
 
 }
 
